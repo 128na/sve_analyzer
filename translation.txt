@@ -1,0 +1,19 @@
+memo
+
+einstellungen
+  setting
+
+planquadrat
+  place?
+
+gebaeude
+  building
+
+haltestelle
+  station
+
+
+haltestelle_t
+  [koord3d] 駅座標一覧
+
+grund_t.cdata 駅名

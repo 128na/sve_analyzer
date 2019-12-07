@@ -16,12 +16,13 @@
     <div>
       <strong>マップ情報</strong>
       <p>No：{{ info.map.no }}</p>
-      <p>x:{{ info.map.x }}</p>
-      <p>y:{{ info.map.y }}</p>
+      <p>横:{{ info.map.width }}</p>
+      <p>縦:{{ info.map.depth }}</p>
     </div>
   </div>
 </template>
 <script>
+import { STATUSES } from "../const";
 import fileService from "../services/file";
 import simutransService from "../services/simutrans";
 export default {
@@ -31,7 +32,10 @@ export default {
       info: {
         file: {},
         simutrans: {},
-        map: {}
+        map: {},
+        stations: {},
+        lines: {},
+        players: {}
       },
 
       xml: null
@@ -39,7 +43,7 @@ export default {
   },
   watch: {
     status(s) {
-      // console.log(s);
+      console.log(s);
     }
   },
   methods: {
@@ -51,11 +55,19 @@ export default {
       }
     },
     onParsed(xml) {
+      this.onStatusChange(STATUSES.simutrans);
       this.info.simutrans = simutransService.getSimutransInfo(xml);
+
+      this.onStatusChange(STATUSES.map);
       this.info.map = simutransService.getMapInfo(xml);
-      // console.log(simutransService.getStations(xml));
-      // console.log(simutransService.getRelations(xml));
-      // console.log(simutransService.getPlayers(xml));
+
+      this.onStatusChange(STATUSES.station);
+      this.info.stations = simutransService.getStations(xml);
+      this.onStatusChange(STATUSES.relation);
+      // simutransService.getRelations(xml);
+      this.onStatusChange(STATUSES.player);
+      // simutransService.getPlayers(xml);
+      this.onStatusChange(STATUSES.finished);
     },
     onStatusChange(status) {
       this.status = status;

@@ -18,16 +18,20 @@ export default {
       console.warn(e);
       onStatusChange(STATUSES.file_error);
     };
-    reader.onloadstart = e => {
+    reader.onloadstart = () => {
       onStatusChange(STATUSES.file_start);
     };
     reader.onprogress = e => {
-      onStatusChange(STATUSES.file_progress(e));
+      onStatusChange(STATUSES.file_progress(e.loaded, e.total));
     };
     reader.onload = e => {
       onStatusChange(STATUSES.xml_start);
+
       const parser = new DOMParser();
-      const xml = parser.parseFromString(e.target.result, "text/xml");
+      const reg = />(\s*)</g;
+      // console.log(e.target.result.replace(reg, "><"));
+      const xml = parser.parseFromString(e.target.result.replace(reg, "><"), "text/xml");
+
       onStatusChange(STATUSES.xml_end);
       onParsed(xml);
     };
