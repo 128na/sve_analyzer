@@ -9,14 +9,29 @@ import sax from 'sax';
 import { STATUSES } from '../const';
 
 export default {
-  async parse(file, onParseFragment, onStatusChange) {
-    onStatusChange(STATUSES.parseSimutrans)
-    onParseFragment('simutrans', await this.parseSimutrans(file));
-    onStatusChange(STATUSES.parseMapInfo)
-    onParseFragment('map', await this.parseMapInfo(file));
-    onStatusChange(STATUSES.parseStations)
-    onParseFragment('stations', await this.parseStations(file));
-    onStatusChange(STATUSES.finished)
+  async parse(file, onParseData, onStatusChange) {
+    if (typeof onParseData !== 'function') {
+      throw "onParseData is not function!";
+    }
+    if (typeof onStatusChange !== 'function') {
+      throw "onStatusChange is not function!";
+    }
+
+    onStatusChange(STATUSES.PARSE_SIMUTRANS)
+    onParseData('simutrans', await this.parseSimutrans(file));
+
+    onStatusChange(STATUSES.PARSE_MAP_INFO)
+    const map = await this.parseMapInfo(file);
+    onParseData('map', map);
+
+    onStatusChange(STATUSES.PARSE_STATIONS)
+    const stations = await this.parseStations(file);
+    onStatusChange(STATUSES.PARSE_STATION_NAMES)
+    const names = await this.parseStationNames(file, map.width);
+    onStatusChange(STATUSES.MERGE_STATION_NAMES)
+    onParseData('stations', this.mergeStationNames(stations, names));
+
+    onStatusChange(STATUSES.FINISHED)
   },
   contentParser(file, parseAction) {
     return new Promise((resolved, reject) => {
@@ -93,27 +108,27 @@ export default {
     return this.contentParser(file, ({ stream, parser, resolved }) => {
       const stations = [];
 
-      let capture_station = false;
+      let is_station = false;
       let count = 0;
       let station = { coordinates: [] };
 
       parser.on('opentag', el => {
         if (el.name === 'haltestelle_t') {
-          // console.log('capture_station on');
-          capture_station = true;
+          // console.log('is_station on');
+          is_station = true;
           station = { coordinates: [] };
         }
       });
       parser.on('closetag', name => {
         if (name === 'haltestelle_t') {
-          // console.log('capture_station off');
-          capture_station = false;
+          // console.log('is_station off');
+          is_station = false;
           stations.push(station);
           count = 0;
         }
       });
       parser.on('text', text => {
-        if (capture_station) {
+        if (is_station) {
           switch (count) {
             case 0:
               station.id = parseInt(text, 10);
@@ -126,27 +141,27 @@ export default {
         }
       });
 
-      let capture_coordinate = false;
+      let is_coordinate = false;
       let coordinate = [];
 
       parser.on('opentag', el => {
-        if (capture_station && el.name === 'koord3d') {
-          // console.log('capture_coordinate on');
-          capture_coordinate = true;
+        if (is_station && el.name === 'koord3d') {
+          // console.log('is_coordinate on');
+          is_coordinate = true;
           coordinate = [];
         }
       });
       parser.on('closetag', name => {
-        if (capture_station && name === 'koord3d') {
-          // console.log('capture_coordinate off');
-          capture_coordinate = false;
+        if (is_station && name === 'koord3d') {
+          // console.log('is_coordinate off');
+          is_coordinate = false;
           if (!(coordinate[0] === -1 && coordinate[1] === -1 && coordinate[2] === -1)) {
             station.coordinates.push(coordinate);
           }
         }
       });
       parser.on('text', text => {
-        if (capture_station && capture_coordinate) {
+        if (is_station && is_coordinate) {
           coordinate.push(parseInt(text, 10));
         }
       });
@@ -155,42 +170,91 @@ export default {
       });
     });
   },
-  /**
-   * 各駅の座標一覧に駅情報をマージする
-   */
-  mergeStationInfo(stations, xml) {
-    const width = xml.querySelector("einstellungen_t").childNodes.item(0).textContent;
+  // 駅名
+  parseStationNames(file, width) {
+    const stations = [];
+    let station = {};
+    let x, y, z;
+    return this.contentParser(file, ({ stream, parser, resolved }) => {
+      let is_place = false;
+      let place_count = 0;
+      parser.on('opentag', el => {
+        if (el.name === 'planquadrat_t') {
+          is_place = true;
+          x = place_count % width
+          y = Math.floor(place_count / width)
 
-    /**
-     * 個々の要素はインデックスから算出する必要があるためフィルタせずに全ての座標をパースする
-     */
-    [...xml.querySelectorAll("planquadrat_t")]
-      .map((n, index) => {
-        const x = index % width;
-        const y = Math.floor(index / width);
-        // マス内の各高さで名前のついているもの
-        [...n.querySelectorAll('grund_t')]
-          .filter(ground_t => ground_t.childNodes.item(3).textContent)
-          .map(ground_t => {
-            const z = parseInt(ground_t.firstChild.textContent, 10);
-            const coordinate = [x, y, z];
-
-            const obj_t = ground_t.querySelector('obj_t');
-            const player_id = parseInt(obj_t.childNodes.item(2).textContent, 10);
-            const info = {
-              name: ground_t.childNodes.item(3).textContent,
-            };
-
-            stations = this.mergeStationInfoBy(stations, coordinate, player_id, info);
-          })
+          place_count++;
+        }
       });
+      parser.on('closetag', name => {
+        if (name === 'planquadrat_t') {
+          is_place = false;
+          x = 0;
+          y = 0;
+        }
+      });
+
+      let is_ground = false;
+      let ground_count = 0;
+      let has_buiding = false
+      parser.on('opentag', el => {
+        if (is_place && el.name === 'grund_t') {
+          is_ground = true;
+          ground_count = 0;
+        }
+      });
+      parser.on('closetag', name => {
+        if (is_place && name === 'grund_t') {
+          is_ground = false;
+          if (has_buiding && station.name && station.coordinate) {
+            stations.push(station);
+          }
+          station = {};
+          has_buiding = false;
+          z = 0;
+        }
+      });
+
+      parser.on('opentag', el => {
+        if (is_ground && el.name === 'gebaeude_t') {
+          has_buiding = true;
+        }
+      });
+
+      parser.on('cdata', text => {
+        if (is_place && is_ground) {
+          if (ground_count === 3) {
+            station.name = text;
+          }
+        }
+      });
+      parser.on('text', text => {
+        if (is_place && is_ground) {
+          if (ground_count === 0) {
+            z = parseInt(text, 10);
+            station.coordinate = [x, y, z];
+          }
+          ground_count++;
+        }
+      });
+
+      parser.on('end', () => {
+        resolved(stations);
+      });
+    });
+  },
+  // 駅名を駅情報に統合
+  mergeStationNames(stations, labels) {
+    labels.map(l => {
+      stations = this.mergeStationInfoBy(stations, l.coordinate, { name: l.name });
+    });
     return stations;
   },
-  mergeStationInfoBy(stations, coordinate, player_id, info) {
+  mergeStationInfoBy(stations, coordinate, info) {
     return stations.map(s => {
       const has_coordinate = s.coordinates.findIndex(c => c[0] === coordinate[0] && c[1] === coordinate[1] && c[2] === coordinate[2]) !== -1;
-      const match_player_id = s.player_id === player_id;
-      if (has_coordinate && match_player_id) {
+      if (has_coordinate) {
         return Object.assign({}, s, info);
       }
       return s;

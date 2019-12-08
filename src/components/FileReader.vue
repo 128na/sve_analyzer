@@ -11,7 +11,7 @@ import simutransService from "../services/simutrans_stream";
 export default {
   data() {
     return {
-      status: STATUSES.ready,
+      status: STATUSES.READY,
       xml: null
     };
   },
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     handleFileChange(e) {
-      this.onStatusChange(STATUSES.start);
+      this.onStatusChange(STATUSES.START);
       this.$emit("fileSelected");
       const file = e.target.files[0];
       if (file) {
@@ -30,10 +30,10 @@ export default {
           label: "file",
           data: fileService.getFileInfo(file)
         });
-        simutransService.parse(file, this.onParseFragment, this.onStatusChange);
+        simutransService.parse(file, this.onParseData, this.onStatusChange);
       }
     },
-    onParseFragment(label, data) {
+    onParseData(label, data) {
       this.$emit("updateInfo", { label, data });
     },
     onStatusChange(status) {
