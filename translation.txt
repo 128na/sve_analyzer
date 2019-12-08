@@ -4,7 +4,7 @@ einstellungen
   setting
 
 planquadrat
-  place?
+  plan quadrat ~ plan square
 
 gebaeude
   building
@@ -16,4 +16,5 @@ haltestelle
 haltestelle_t
   [koord3d] 駅座標一覧
 
-grund_t.cdata 駅名
+spieler
+  player
