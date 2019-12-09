@@ -4,8 +4,8 @@
       セーブデータから路線情報とかを取得するやつ
       <small>version 3.34</small>
     </h3>
-    <FileReader @update="update" @select="setDefault" />
-    <InfoTable :info="info" />
+    <FileReader @updateFile="updateFile" @updateInfo="updateInfo" @select="setDefault" />
+    <InfoTable :file="file" :info="info" />
   </div>
 </template>
 
@@ -21,6 +21,7 @@ export default {
   },
   data() {
     return {
+      file: null,
       info: null
     };
   },
@@ -29,17 +30,24 @@ export default {
   },
   methods: {
     setDefault() {
+      this.file = {
+        name: "--",
+        size: 0
+      };
       this.info = {
-        file: {},
         simutrans: {},
         map: {},
         stations: [],
         lines: [],
-        players: []
+        players: [],
+        lines: []
       };
     },
-    update({ label, data }) {
-      this.info[label] = data;
+    updateFile(file) {
+      this.file = file;
+    },
+    updateInfo({ data }) {
+      this.info = data;
     }
   }
 };

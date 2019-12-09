@@ -1,10 +1,8 @@
-const STATUSES = {
-  READY: "-",
-  START: "解析：開始",
-  PARSE_START: "xmlパース：開始",
-  PARSE_FINISHED: "xmlパース：完了",
-  MERGE_START: "統合：開始",
-  MERGE_FINISHED: "統合：完了",
+const STEPS = {
+  READY: "--",
+  PARSE: "xmlパース",
+  MERGE: "統合",
+  RENDER: "表示",
   FINISHED: "完了",
 };
 const PLAYER_TYPES = [
@@ -15,5 +13,4 @@ const PLAYER_TYPES = [
   'スクリプトAI',
 ]
 
-
-export { STATUSES, PLAYER_TYPES };
+export { STEPS, PLAYER_TYPES };

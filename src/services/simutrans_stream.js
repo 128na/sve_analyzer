@@ -6,28 +6,27 @@ import fileReaderStream from 'filereader-stream';
  * @see https://github.com/isaacs/sax-js
  */
 import sax from 'sax';
-import { STATUSES } from '../const';
 
 export default {
-  async parse(file, onStatusChange) {
-    if (typeof onStatusChange !== 'function') {
-      throw "onStatusChange is not function!";
-    }
+  async parse(file) {
     this.init();
 
-    await onStatusChange(STATUSES.PARSE_START);
     // リスナ数上限があるので適度に分けてみる
     await this.parseContentPhase1(file);
     await this.parseContentPhase2(file);
-    await onStatusChange(STATUSES.PARSE_FINISHED);
 
-    await onStatusChange(STATUSES.MERGE_START);
+    return this.data;
+  },
+  merge() {
     this.mergeStationInfo();
     this.mergePlayerInfo();
-    await onStatusChange(STATUSES.MERGE_FINISHED);
 
-    console.log(this.data)
-    return this.data;
+    return {
+      simutrans: this.data.simutrans,
+      map: this.data.map,
+      stations: this.data.stations,
+      players: this.data.players,
+    };
   },
   data: null,
   init() {
@@ -40,12 +39,9 @@ export default {
       players: [],
     }
   },
-  createParser(file, resolved, reject) {
-    const stream = fileReaderStream(file);
+  createParser(resolved, reject) {
     const parser = sax.createStream(false, {
       lowercase: true,
-      trim: true,
-      position: true,
     });
     parser.on('error', err => {
       console.log(err);
@@ -73,7 +69,7 @@ export default {
   parseContentPhase1(file) {
     return new Promise((resolved, reject) => {
       const stream = fileReaderStream(file);
-      const parser = this.createParser(file, resolved, reject);
+      const parser = this.createParser(resolved, reject);
 
       this.parseSimutrans(parser);
       this.parseMapInfo(parser);
@@ -85,7 +81,7 @@ export default {
   parseContentPhase2(file) {
     return new Promise((resolved, reject) => {
       const stream = fileReaderStream(file);
-      const parser = this.createParser(file, resolved, reject);
+      const parser = this.createParser(resolved, reject);
 
       this.parsePlayerTypes(parser);
       this.parsePlayers(parser);
@@ -262,12 +258,11 @@ export default {
       }
     });
   },
-  // 駅名を駅情報に統合
+  // 駅情報に駅名を統合
   mergeStationInfo() {
     this.data.stations_names.map(l => {
       this.mergeStationInfoBy(l.coordinate, { name: l.name });
     });
-    this.data.stations_names = [];
   },
   mergeStationInfoBy(coordinate, info) {
     this.data.stations = this.data.stations.map(s => {
@@ -278,6 +273,7 @@ export default {
       return s;
     })
   },
+  // プレイヤータイプ
   parsePlayerTypes(parser) {
     let is_setting = false;
     let is_players = false;
@@ -314,6 +310,7 @@ export default {
       }
     })
   },
+  // プレイヤー情報
   parsePlayers(parser) {
     let is_player = false;
     let is_line = false;
@@ -341,23 +338,9 @@ export default {
 
 
   },
+  // プレイヤー情報にプレイヤータイプを統合
   mergePlayerInfo() {
     this.data.players = this.data.players.map((p, i) => Object.assign(
       { id: i }, p, this.data.player_types[i]));
-  },
-  getPlayers(xml) {
-    const begin_player = [...xml.querySelector("einstellungen_t").childNodes].findIndex(n => n.textContent === 'ja');
-    const players = [...Array(16)].map((_, i) => begin_player + 2 * (i + 1))
-      .map(no => {
-        return {
-          // 0 non active, 1 user, 2:AI freight, 3:AI passenger ,4:scripted AI
-          type: parseInt(xml.querySelector("einstellungen_t").childNodes.item(no).textContent, 10)
-        }
-      });
-    [...xml.querySelectorAll("spieler_t")]
-      .map((p, index) => {
-        players[index].name = p.childNodes.item(p.childNodes.length - 2).textContent
-      });
-    return players;
   },
 }
