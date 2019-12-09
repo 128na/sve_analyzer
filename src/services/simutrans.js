@@ -7,6 +7,12 @@ import fileReaderStream from 'filereader-stream';
  */
 import sax from 'sax';
 
+import events from 'events';
+/**
+ * @see https://nodejs.org/api/events.html#events_eventemitter_defaultmaxlisteners
+ */
+events.EventEmitter.defaultMaxListeners = 334;
+
 export default {
   async parse(file) {
     this.init();
