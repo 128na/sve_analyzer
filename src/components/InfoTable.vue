@@ -10,14 +10,14 @@
     <div>
       <strong>セーブデータ情報</strong>
       <p>バージョン：{{ info.simutrans.version }}</p>
-      <p>pak:{{ info.simutrans.pak }}</p>
+      <p>pak：{{ info.simutrans.pak }}</p>
     </div>
     <hr />
     <div>
       <strong>マップ情報</strong>
       <p>No：{{ info.map.no }}</p>
-      <p>横:{{ info.map.width }}</p>
-      <p>縦:{{ info.map.depth }}</p>
+      <p>横：{{ info.map.width }}</p>
+      <p>縦：{{ info.map.depth }}</p>
     </div>
     <hr />
     <div>

@@ -13,6 +13,7 @@ export default {
     if (typeof onStatusChange !== 'function') {
       throw "onStatusChange is not function!";
     }
+    this.init();
 
     await onStatusChange(STATUSES.PARSE_START);
     // リスナ数上限があるので適度に分けてみる
@@ -28,13 +29,16 @@ export default {
     console.log(this.data)
     return this.data;
   },
-  data: {
-    simutrans: {},
-    map: {},
-    stations: [],
-    stations_names: [],
-    player_types: [],
-    players: [],
+  data: null,
+  init() {
+    this.data = {
+      simutrans: {},
+      map: {},
+      stations: [],
+      stations_names: [],
+      player_types: [],
+      players: [],
+    }
   },
   createParser(file, resolved, reject) {
     const stream = fileReaderStream(file);
@@ -226,7 +230,7 @@ export default {
       if (is_place && name === 'grund_t') {
         is_ground = false;
         if (has_buiding && station.name && station.coordinate) {
-          console.log('add station name');
+          console.log('add named bulding');
           this.data.stations_names.push(station);
         }
         station = {};

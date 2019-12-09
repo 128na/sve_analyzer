@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="file" @change="handleFileChange" />
-    <p>status: {{ status }}</p>
+    <p>進捗：{{ status }}</p>
   </div>
 </template>
 <script>
