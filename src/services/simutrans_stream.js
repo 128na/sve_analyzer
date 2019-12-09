@@ -15,13 +15,17 @@ export default {
     }
 
     await onStatusChange(STATUSES.PARSE_START);
-    await this.parseContent(file);
+    // リスナ数上限があるので適度に分けてみる
+    await this.parseContentPhase1(file);
+    await this.parseContentPhase2(file);
     await onStatusChange(STATUSES.PARSE_FINISHED);
 
     await onStatusChange(STATUSES.MERGE_START);
     this.mergeStationInfo();
+    this.mergePlayerInfo();
     await onStatusChange(STATUSES.MERGE_FINISHED);
 
+    console.log(this.data)
     return this.data;
   },
   data: {
@@ -29,41 +33,58 @@ export default {
     map: {},
     stations: [],
     stations_names: [],
+    player_types: [],
     players: [],
   },
-  parseContent(file) {
+  createParser(file, resolved, reject) {
+    const stream = fileReaderStream(file);
+    const parser = sax.createStream(false, {
+      lowercase: true,
+      trim: true,
+      position: true,
+    });
+    parser.on('error', err => {
+      console.log(err);
+      reject(err);
+    });
+    parser.on('end', () => {
+      resolved(this.data);
+    });
+    parser.onopenTagName = (tag, cb) => {
+      parser.on('opentag', el => {
+        if (el.name === tag) {
+          cb(el);
+        }
+      })
+    };
+    parser.oncloseTagName = (tag, cb) => {
+      parser.on('closetag', name => {
+        if (name === tag) {
+          cb(name);
+        }
+      })
+    };
+    return parser;
+  },
+  parseContentPhase1(file) {
     return new Promise((resolved, reject) => {
       const stream = fileReaderStream(file);
-      const parser = sax.createStream(false, {
-        lowercase: true,
-        trim: true,
-        position: true,
-      });
-      parser.on('error', err => {
-        console.log(err);
-        reject(err);
-      });
-      parser.on('end', () => {
-        resolved(this.data);
-      });
-      parser.onopenTagName = (tag, cb) => {
-        parser.on('opentag', el => {
-          if (el.name === tag) {
-            cb(el);
-          }
-        })
-      };
-      parser.oncloseTagName = (tag, cb) => {
-        parser.on('closetag', name => {
-          if (name === tag) {
-            cb(name);
-          }
-        })
-      };
+      const parser = this.createParser(file, resolved, reject);
+
       this.parseSimutrans(parser);
       this.parseMapInfo(parser);
       this.parseStations(parser);
       this.parseStationNames(parser);
+      stream.pipe(parser);
+    });
+  },
+  parseContentPhase2(file) {
+    return new Promise((resolved, reject) => {
+      const stream = fileReaderStream(file);
+      const parser = this.createParser(file, resolved, reject);
+
+      this.parsePlayerTypes(parser);
+      this.parsePlayers(parser);
       stream.pipe(parser);
     });
   },
@@ -252,6 +273,73 @@ export default {
       }
       return s;
     })
+  },
+  parsePlayerTypes(parser) {
+    let is_setting = false;
+    let is_players = false;
+    let is_player = false;
+    parser.onopenTagName('einstellungen_t', () => {
+      is_setting = true;
+    });
+    parser.oncloseTagName('einstellungen_t', () => {
+      is_setting = false;
+    });
+    parser.on('cdata', text => {
+      if (is_setting && text === 'ja') {
+        is_players = true;
+      }
+    });
+    parser.onopenTagName('i8', () => {
+      if (is_players) {
+        is_player = true;
+      }
+    });
+    parser.oncloseTagName('i8', () => {
+      if (is_players) {
+        is_player = false;
+      }
+    });
+
+    parser.on('text', text => {
+      if (is_players && is_player) {
+        console.log('add player type');
+        this.data.player_types.push({ type: parseInt(text, 10) });
+        if (this.data.player_types.length >= 16) {
+          is_players = false;
+        }
+      }
+    })
+  },
+  parsePlayers(parser) {
+    let is_player = false;
+    let is_line = false;
+    let player = {};
+    parser.onopenTagName('spieler_t', () => {
+      is_player = true;
+    });
+    parser.oncloseTagName('spieler_t', () => {
+      is_player = false;
+      this.data.players.push(player);
+      player = {};
+    });
+    parser.onopenTagName('simline_t', () => {
+      is_line = true;
+    });
+    parser.oncloseTagName('simline_t', () => {
+      is_line = false;
+    });
+
+    parser.on('cdata', text => {
+      if (is_player && !is_line) {
+        player.name = text;
+      }
+    });
+
+
+  },
+  mergePlayerInfo() {
+    this.data.players = this.data.players.map((p, i) => Object.assign(
+      { id: i }, p, this.data.player_types[i]));
   },
   getPlayers(xml) {
     const begin_player = [...xml.querySelector("einstellungen_t").childNodes].findIndex(n => n.textContent === 'ja');

@@ -41,6 +41,7 @@ export default {
       this.$emit("update", { label: "simutrans", data: data.simutrans });
       this.$emit("update", { label: "map", data: data.map });
       this.$emit("update", { label: "stations", data: data.stations });
+      this.$emit("update", { label: "players", data: data.players });
     },
     async onStatusChange(status) {
       this.status = status;

@@ -42,16 +42,34 @@
     <hr />
     <div>
       <strong>プレーヤー情報</strong>
+      <table>
+        <thead>
+          <th>ID</th>
+          <th>名前</th>
+          <th>タイプ</th>
+        </thead>
+        <tbody>
+          <tr v-for="player in info.players" :key="player.id">
+            <td>{{ player.id }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ playerTypeText(player.type) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 <script>
 import { toKB } from "../helper";
+import { PLAYER_TYPES } from "../const";
 export default {
   props: ["info"],
   methods: {
     toKB(number = 0) {
       return toKB(number);
+    },
+    playerTypeText(type) {
+      return PLAYER_TYPES[type] || "??";
     }
   }
 };
