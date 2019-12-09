@@ -11,9 +11,7 @@ export default {
   async parse(file) {
     this.init();
 
-    // リスナ数上限があるので適度に分けてみる
-    await this.parseContentPhase1(file);
-    await this.parseContentPhase2(file);
+    await this.parseContent(file);
 
     return this.data;
   },
@@ -67,7 +65,7 @@ export default {
     };
     return parser;
   },
-  parseContentPhase1(file) {
+  parseContent(file) {
     return new Promise((resolved, reject) => {
       const stream = fileReaderStream(file);
       const parser = this.createParser(resolved, reject);
@@ -76,14 +74,6 @@ export default {
       this.parseMapInfo(parser);
       this.parseStations(parser);
       this.parseStationNames(parser);
-      stream.pipe(parser);
-    });
-  },
-  parseContentPhase2(file) {
-    return new Promise((resolved, reject) => {
-      const stream = fileReaderStream(file);
-      const parser = this.createParser(resolved, reject);
-
       this.parsePlayerTypes(parser);
       this.parsePlayers(parser);
       stream.pipe(parser);
