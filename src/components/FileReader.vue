@@ -7,7 +7,7 @@
 <script>
 import { STEPS } from "../const";
 import fileService from "../services/file";
-import simutransService from "../services/simutrans_stream";
+import simutransService from "../services/simutrans";
 export default {
   data() {
     return {

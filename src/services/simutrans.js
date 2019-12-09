@@ -1,92 +1,346 @@
+/**
+ * @see https://github.com/maxogden/filereader-stream
+ */
+import fileReaderStream from 'filereader-stream';
+/**
+ * @see https://github.com/isaacs/sax-js
+ */
+import sax from 'sax';
+
 export default {
-  getSimutransInfo(xml) {
-    const res = xml.querySelector("Simutrans");
-    return {
-      version: res.getAttribute("version"),
-      pak: res.getAttribute("pak")
-    }
+  async parse(file) {
+    this.init();
+
+    // リスナ数上限があるので適度に分けてみる
+    await this.parseContentPhase1(file);
+    await this.parseContentPhase2(file);
+
+    return this.data;
   },
-  getMapInfo(xml) {
-    const res = xml.querySelector("einstellungen_t");
-    // [...res.childNodes].map((n, i) => console.log(i, n.textContent))
+  merge() {
+    this.mergeStationInfo();
+    this.mergePlayerInfo();
 
     return {
-      width: res.childNodes.item(0).textContent,
-      depth: res.childNodes.item(13).textContent,
-      no: res.childNodes.item(1).textContent,
+      simutrans: this.data.simutrans,
+      map: this.data.map,
+      stations: this.data.stations,
+      players: this.data.players,
+    };
+  },
+  data: null,
+  init() {
+    this.data = {
+      simutrans: {},
+      map: {},
+      stations: [],
+      stations_names: [],
+      player_types: [],
+      players: [],
     }
   },
-  /**
-   * 各駅の座標一覧を取得する
-   */
-  getStations(xml) {
-    return [...xml.querySelectorAll("haltestelle_t")]
-      .map(s => {
-        return {
-          id: parseInt(s.childNodes.item(0).textContent, 10),
-          player_id: parseInt(s.childNodes.item(1).textContent, 10),
-          coordinates: [...s.querySelectorAll('koord3d')].map(k => [
-            parseInt(k.childNodes.item(0).textContent, 10),
-            parseInt(k.childNodes.item(1).textContent, 10),
-            parseInt(k.childNodes.item(2).textContent, 10)
-          ])
+  createParser(resolved, reject) {
+    const parser = sax.createStream(false, {
+      lowercase: true,
+    });
+    parser.on('error', err => {
+      console.log(err);
+      reject(err);
+    });
+    parser.on('end', () => {
+      resolved(this.data);
+    });
+    parser.onopenTagName = (tag, cb) => {
+      parser.on('opentag', el => {
+        if (el.name === tag) {
+          cb(el);
         }
       })
+    };
+    parser.oncloseTagName = (tag, cb) => {
+      parser.on('closetag', name => {
+        if (name === tag) {
+          cb(name);
+        }
+      })
+    };
+    return parser;
   },
-  /**
-   * 各駅の座標一覧に駅情報をマージする
-   */
-  mergeStationInfo(stations, xml) {
-    const width = xml.querySelector("einstellungen_t").childNodes.item(0).textContent;
+  parseContentPhase1(file) {
+    return new Promise((resolved, reject) => {
+      const stream = fileReaderStream(file);
+      const parser = this.createParser(resolved, reject);
 
-    /**
-     * 個々の要素はインデックスから算出する必要があるためフィルタせずに全ての座標をパースする
-     */
-    [...xml.querySelectorAll("planquadrat_t")]
-      .map((n, index) => {
-        const x = index % width;
-        const y = Math.floor(index / width);
-        // マス内の各高さで名前のついているもの
-        [...n.querySelectorAll('grund_t')]
-          .filter(ground_t => ground_t.childNodes.item(3).textContent)
-          .map(ground_t => {
-            const z = parseInt(ground_t.firstChild.textContent, 10);
-            const coordinate = [x, y, z];
-
-            const obj_t = ground_t.querySelector('obj_t');
-            const player_id = parseInt(obj_t.childNodes.item(2).textContent, 10);
-            const info = {
-              name: ground_t.childNodes.item(3).textContent,
-            };
-
-            stations = this.mergeStationInfoBy(stations, coordinate, player_id, info);
-          })
-      });
-    return stations;
+      this.parseSimutrans(parser);
+      this.parseMapInfo(parser);
+      this.parseStations(parser);
+      this.parseStationNames(parser);
+      stream.pipe(parser);
+    });
   },
-  mergeStationInfoBy(stations, coordinate, player_id, info) {
-    return stations.map(s => {
+  parseContentPhase2(file) {
+    return new Promise((resolved, reject) => {
+      const stream = fileReaderStream(file);
+      const parser = this.createParser(resolved, reject);
+
+      this.parsePlayerTypes(parser);
+      this.parsePlayers(parser);
+      stream.pipe(parser);
+    });
+  },
+  // Simutrans情報
+  parseSimutrans(parser) {
+    parser.onopenTagName('simutrans', el => {
+      console.log('add simutrans');
+      this.data.simutrans = {
+        version: el.attributes.version,
+        pak: el.attributes.pak
+      };
+    });
+  },
+  // マップ情報
+  parseMapInfo(parser) {
+    let capture = false;
+    let count = 0;
+    const data = {};
+
+    parser.onopenTagName('einstellungen_t', () => {
+      // console.log('capture on');
+      capture = true;
+    });
+    parser.oncloseTagName('einstellungen_t', () => {
+      // console.log('capture off');
+      capture = false;
+    });
+    parser.on('text', text => {
+      if (capture) {
+        // console.log(count, text);
+        switch (count) {
+          case 0:
+            data.width = parseInt(text, 10);
+            break;
+          case 1:
+            data.no = parseInt(text, 10);
+            break;
+          case 13:
+            data.depth = parseInt(text, 10);
+            console.log('add map');
+            this.data.map = data;
+            break;
+        }
+        count++;
+      }
+    });
+  },
+  // 駅情報
+  parseStations(parser) {
+    let is_station = false;
+    let count = 0;
+    let station = { coordinates: [] };
+
+    let is_coordinate = false;
+    let coordinate = [];
+
+    parser.onopenTagName('haltestelle_t', () => {
+      // console.log('is_station on');
+      is_station = true;
+      station = { coordinates: [] };
+    });
+    parser.oncloseTagName('haltestelle_t', () => {
+      // console.log('is_station off');
+      is_station = false;
+      console.log('add station');
+      this.data.stations.push(station);
+      count = 0;
+    });
+    parser.on('text', text => {
+      if (is_station) {
+        switch (count) {
+          case 0:
+            station.id = parseInt(text, 10);
+            break;
+          case 1:
+            station.player_id = parseInt(text, 10);
+            break;
+        }
+        count++;
+      }
+    });
+
+    parser.onopenTagName('koord3d', () => {
+      if (is_station) {
+        // console.log('is_coordinate on');
+        is_coordinate = true;
+        coordinate = [];
+      }
+    });
+    parser.oncloseTagName('koord3d', () => {
+      if (is_station) {
+        // console.log('is_coordinate off');
+        is_coordinate = false;
+        if (!(coordinate[0] === -1 && coordinate[1] === -1 && coordinate[2] === -1)) {
+          station.coordinates.push(coordinate);
+        }
+      }
+    });
+    parser.on('text', text => {
+      if (is_station && is_coordinate) {
+        coordinate.push(parseInt(text, 10));
+      }
+    });
+  },
+  // 駅名
+  parseStationNames(parser) {
+    let station = {};
+    let x, y, z;
+
+    let is_place = false;
+    let place_count = 0;
+    parser.on('opentag', el => {
+      if (el.name === 'planquadrat_t') {
+        is_place = true;
+        x = place_count % this.data.map.width
+        y = Math.floor(place_count / this.data.map.width)
+
+        place_count++;
+      }
+    });
+    parser.on('closetag', name => {
+      if (name === 'planquadrat_t') {
+        is_place = false;
+        x = 0;
+        y = 0;
+      }
+    });
+
+    let is_ground = false;
+    let ground_count = 0;
+    let has_buiding = false
+    parser.on('opentag', el => {
+      if (is_place && el.name === 'grund_t') {
+        is_ground = true;
+        ground_count = 0;
+      }
+    });
+    parser.on('closetag', name => {
+      if (is_place && name === 'grund_t') {
+        is_ground = false;
+        if (has_buiding && station.name && station.coordinate) {
+          console.log('add named bulding');
+          this.data.stations_names.push(station);
+        }
+        station = {};
+        has_buiding = false;
+        z = 0;
+      }
+    });
+
+    parser.on('opentag', el => {
+      if (is_ground && el.name === 'gebaeude_t') {
+        has_buiding = true;
+      }
+    });
+
+    parser.on('cdata', text => {
+      if (is_place && is_ground) {
+        if (ground_count === 3) {
+          station.name = text;
+        }
+      }
+    });
+    parser.on('text', text => {
+      if (is_place && is_ground) {
+        if (ground_count === 0) {
+          z = parseInt(text, 10);
+          station.coordinate = [x, y, z];
+        }
+        ground_count++;
+      }
+    });
+  },
+  // 駅情報に駅名を統合
+  mergeStationInfo() {
+    this.data.stations_names.map(l => {
+      this.mergeStationInfoBy(l.coordinate, { name: l.name });
+    });
+  },
+  mergeStationInfoBy(coordinate, info) {
+    this.data.stations = this.data.stations.map(s => {
       const has_coordinate = s.coordinates.findIndex(c => c[0] === coordinate[0] && c[1] === coordinate[1] && c[2] === coordinate[2]) !== -1;
-      const match_player_id = s.player_id === player_id;
-      if (has_coordinate && match_player_id) {
+      if (has_coordinate) {
         return Object.assign({}, s, info);
       }
       return s;
     })
   },
-  getPlayers(xml) {
-    const begin_player = [...xml.querySelector("einstellungen_t").childNodes].findIndex(n => n.textContent === 'ja');
-    const players = [...Array(16)].map((_, i) => begin_player + 2 * (i + 1))
-      .map(no => {
-        return {
-          // 0 non active, 1 user, 2:AI freight, 3:AI passenger ,4:scripted AI
-          type: parseInt(xml.querySelector("einstellungen_t").childNodes.item(no).textContent, 10)
+  // プレイヤータイプ
+  parsePlayerTypes(parser) {
+    let is_setting = false;
+    let is_players = false;
+    let is_player = false;
+    parser.onopenTagName('einstellungen_t', () => {
+      is_setting = true;
+    });
+    parser.oncloseTagName('einstellungen_t', () => {
+      is_setting = false;
+    });
+    parser.on('cdata', text => {
+      if (is_setting && text === 'ja') {
+        is_players = true;
+      }
+    });
+    parser.onopenTagName('i8', () => {
+      if (is_players) {
+        is_player = true;
+      }
+    });
+    parser.oncloseTagName('i8', () => {
+      if (is_players) {
+        is_player = false;
+      }
+    });
+
+    parser.on('text', text => {
+      if (is_players && is_player) {
+        console.log('add player type');
+        this.data.player_types.push({ type: parseInt(text, 10) });
+        if (this.data.player_types.length >= 16) {
+          is_players = false;
         }
-      });
-    [...xml.querySelectorAll("spieler_t")]
-      .map((p, index) => {
-        players[index].name = p.childNodes.item(p.childNodes.length - 2).textContent
-      });
-    return players;
+      }
+    })
+  },
+  // プレイヤー情報
+  parsePlayers(parser) {
+    let is_player = false;
+    let is_line = false;
+    let player = {};
+    parser.onopenTagName('spieler_t', () => {
+      is_player = true;
+    });
+    parser.oncloseTagName('spieler_t', () => {
+      is_player = false;
+      this.data.players.push(player);
+      player = {};
+    });
+    parser.onopenTagName('simline_t', () => {
+      is_line = true;
+    });
+    parser.oncloseTagName('simline_t', () => {
+      is_line = false;
+    });
+
+    parser.on('cdata', text => {
+      if (is_player && !is_line) {
+        player.name = text;
+      }
+    });
+
+
+  },
+  // プレイヤー情報にプレイヤータイプを統合
+  mergePlayerInfo() {
+    this.data.players = this.data.players.map((p, i) => Object.assign(
+      { id: i }, p, this.data.player_types[i]));
   },
 }
