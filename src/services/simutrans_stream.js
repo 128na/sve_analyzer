@@ -9,31 +9,29 @@ import sax from 'sax';
 import { STATUSES } from '../const';
 
 export default {
-  async parse(file, onParseData, onStatusChange) {
-    if (typeof onParseData !== 'function') {
-      throw "onParseData is not function!";
-    }
+  async parse(file, onStatusChange) {
     if (typeof onStatusChange !== 'function') {
       throw "onStatusChange is not function!";
     }
 
-    onStatusChange(STATUSES.PARSE_SIMUTRANS)
-    onParseData('simutrans', await this.parseSimutrans(file));
+    await onStatusChange(STATUSES.PARSE_START);
+    await this.parseContent(file);
+    await onStatusChange(STATUSES.PARSE_FINISHED);
 
-    onStatusChange(STATUSES.PARSE_MAP_INFO)
-    const map = await this.parseMapInfo(file);
-    onParseData('map', map);
+    await onStatusChange(STATUSES.MERGE_START);
+    this.mergeStationInfo();
+    await onStatusChange(STATUSES.MERGE_FINISHED);
 
-    onStatusChange(STATUSES.PARSE_STATIONS)
-    const stations = await this.parseStations(file);
-    onStatusChange(STATUSES.PARSE_STATION_NAMES)
-    const names = await this.parseStationNames(file, map.width);
-    onStatusChange(STATUSES.MERGE_STATION_NAMES)
-    onParseData('stations', this.mergeStationNames(stations, names));
-
-    onStatusChange(STATUSES.FINISHED)
+    return this.data;
   },
-  contentParser(file, parseAction) {
+  data: {
+    simutrans: {},
+    map: {},
+    stations: [],
+    stations_names: [],
+    players: [],
+  },
+  parseContent(file) {
     return new Promise((resolved, reject) => {
       const stream = fileReaderStream(file);
       const parser = sax.createStream(false, {
@@ -45,214 +43,209 @@ export default {
         console.log(err);
         reject(err);
       });
-      parseAction({ stream, parser, resolved, reject });
+      parser.on('end', () => {
+        resolved(this.data);
+      });
+      parser.onopenTagName = (tag, cb) => {
+        parser.on('opentag', el => {
+          if (el.name === tag) {
+            cb(el);
+          }
+        })
+      };
+      parser.oncloseTagName = (tag, cb) => {
+        parser.on('closetag', name => {
+          if (name === tag) {
+            cb(name);
+          }
+        })
+      };
+      this.parseSimutrans(parser);
+      this.parseMapInfo(parser);
+      this.parseStations(parser);
+      this.parseStationNames(parser);
       stream.pipe(parser);
     });
   },
   // Simutrans情報
-  parseSimutrans(file) {
-    return this.contentParser(file, ({ stream, parser, resolved }) => {
-      parser.on('opentag', el => {
-        if (el.name === 'simutrans') {
-          resolved({
-            version: el.attributes.version,
-            pak: el.attributes.pak
-          });
-          stream.destroy();
-        }
-      });
+  parseSimutrans(parser) {
+    parser.onopenTagName('simutrans', el => {
+      console.log('add simutrans');
+      this.data.simutrans = {
+        version: el.attributes.version,
+        pak: el.attributes.pak
+      };
     });
   },
   // マップ情報
-  parseMapInfo(file) {
-    return this.contentParser(file, ({ stream, parser, resolved }) => {
-      let capture = false;
-      let count = 0;
-      const data = {};
+  parseMapInfo(parser) {
+    let capture = false;
+    let count = 0;
+    const data = {};
 
-      parser.on('opentag', el => {
-        if (el.name === 'einstellungen_t') {
-          // console.log('capture on');
-          capture = true;
+    parser.onopenTagName('einstellungen_t', () => {
+      // console.log('capture on');
+      capture = true;
+    });
+    parser.oncloseTagName('einstellungen_t', () => {
+      // console.log('capture off');
+      capture = false;
+    });
+    parser.on('text', text => {
+      if (capture) {
+        // console.log(count, text);
+        switch (count) {
+          case 0:
+            data.width = parseInt(text, 10);
+            break;
+          case 1:
+            data.no = parseInt(text, 10);
+            break;
+          case 13:
+            data.depth = parseInt(text, 10);
+            console.log('add map');
+            this.data.map = data;
+            break;
         }
-      });
-      parser.on('closetag', name => {
-        if (name === 'einstellungen_t') {
-          // console.log('capture off');
-          capture = false;
-        }
-      });
-      parser.on('text', text => {
-        if (capture) {
-          // console.log(count, text);
-          switch (count) {
-            case 0:
-              data.width = parseInt(text, 10);
-              break;
-            case 1:
-              data.no = parseInt(text, 10);
-              break;
-            case 13:
-              data.depth = parseInt(text, 10);
-              resolved(data);
-              stream.destroy();
-              break;
-          }
-          count++;
-        }
-      });
+        count++;
+      }
     });
   },
   // 駅情報
-  parseStations(file) {
-    return this.contentParser(file, ({ stream, parser, resolved }) => {
-      const stations = [];
+  parseStations(parser) {
+    let is_station = false;
+    let count = 0;
+    let station = { coordinates: [] };
 
-      let is_station = false;
-      let count = 0;
-      let station = { coordinates: [] };
+    let is_coordinate = false;
+    let coordinate = [];
 
-      parser.on('opentag', el => {
-        if (el.name === 'haltestelle_t') {
-          // console.log('is_station on');
-          is_station = true;
-          station = { coordinates: [] };
+    parser.onopenTagName('haltestelle_t', () => {
+      // console.log('is_station on');
+      is_station = true;
+      station = { coordinates: [] };
+    });
+    parser.oncloseTagName('haltestelle_t', () => {
+      // console.log('is_station off');
+      is_station = false;
+      console.log('add station');
+      this.data.stations.push(station);
+      count = 0;
+    });
+    parser.on('text', text => {
+      if (is_station) {
+        switch (count) {
+          case 0:
+            station.id = parseInt(text, 10);
+            break;
+          case 1:
+            station.player_id = parseInt(text, 10);
+            break;
         }
-      });
-      parser.on('closetag', name => {
-        if (name === 'haltestelle_t') {
-          // console.log('is_station off');
-          is_station = false;
-          stations.push(station);
-          count = 0;
-        }
-      });
-      parser.on('text', text => {
-        if (is_station) {
-          switch (count) {
-            case 0:
-              station.id = parseInt(text, 10);
-              break;
-            case 1:
-              station.player_id = parseInt(text, 10);
-              break;
-          }
-          count++;
-        }
-      });
+        count++;
+      }
+    });
 
-      let is_coordinate = false;
-      let coordinate = [];
-
-      parser.on('opentag', el => {
-        if (is_station && el.name === 'koord3d') {
-          // console.log('is_coordinate on');
-          is_coordinate = true;
-          coordinate = [];
+    parser.onopenTagName('koord3d', () => {
+      if (is_station) {
+        // console.log('is_coordinate on');
+        is_coordinate = true;
+        coordinate = [];
+      }
+    });
+    parser.oncloseTagName('koord3d', () => {
+      if (is_station) {
+        // console.log('is_coordinate off');
+        is_coordinate = false;
+        if (!(coordinate[0] === -1 && coordinate[1] === -1 && coordinate[2] === -1)) {
+          station.coordinates.push(coordinate);
         }
-      });
-      parser.on('closetag', name => {
-        if (is_station && name === 'koord3d') {
-          // console.log('is_coordinate off');
-          is_coordinate = false;
-          if (!(coordinate[0] === -1 && coordinate[1] === -1 && coordinate[2] === -1)) {
-            station.coordinates.push(coordinate);
-          }
-        }
-      });
-      parser.on('text', text => {
-        if (is_station && is_coordinate) {
-          coordinate.push(parseInt(text, 10));
-        }
-      });
-      parser.on('end', () => {
-        resolved(stations);
-      });
+      }
+    });
+    parser.on('text', text => {
+      if (is_station && is_coordinate) {
+        coordinate.push(parseInt(text, 10));
+      }
     });
   },
   // 駅名
-  parseStationNames(file, width) {
-    const stations = [];
+  parseStationNames(parser) {
     let station = {};
     let x, y, z;
-    return this.contentParser(file, ({ stream, parser, resolved }) => {
-      let is_place = false;
-      let place_count = 0;
-      parser.on('opentag', el => {
-        if (el.name === 'planquadrat_t') {
-          is_place = true;
-          x = place_count % width
-          y = Math.floor(place_count / width)
 
-          place_count++;
-        }
-      });
-      parser.on('closetag', name => {
-        if (name === 'planquadrat_t') {
-          is_place = false;
-          x = 0;
-          y = 0;
-        }
-      });
+    let is_place = false;
+    let place_count = 0;
+    parser.on('opentag', el => {
+      if (el.name === 'planquadrat_t') {
+        is_place = true;
+        x = place_count % this.data.map.width
+        y = Math.floor(place_count / this.data.map.width)
 
-      let is_ground = false;
-      let ground_count = 0;
-      let has_buiding = false
-      parser.on('opentag', el => {
-        if (is_place && el.name === 'grund_t') {
-          is_ground = true;
-          ground_count = 0;
-        }
-      });
-      parser.on('closetag', name => {
-        if (is_place && name === 'grund_t') {
-          is_ground = false;
-          if (has_buiding && station.name && station.coordinate) {
-            stations.push(station);
-          }
-          station = {};
-          has_buiding = false;
-          z = 0;
-        }
-      });
+        place_count++;
+      }
+    });
+    parser.on('closetag', name => {
+      if (name === 'planquadrat_t') {
+        is_place = false;
+        x = 0;
+        y = 0;
+      }
+    });
 
-      parser.on('opentag', el => {
-        if (is_ground && el.name === 'gebaeude_t') {
-          has_buiding = true;
+    let is_ground = false;
+    let ground_count = 0;
+    let has_buiding = false
+    parser.on('opentag', el => {
+      if (is_place && el.name === 'grund_t') {
+        is_ground = true;
+        ground_count = 0;
+      }
+    });
+    parser.on('closetag', name => {
+      if (is_place && name === 'grund_t') {
+        is_ground = false;
+        if (has_buiding && station.name && station.coordinate) {
+          console.log('add station name');
+          this.data.stations_names.push(station);
         }
-      });
+        station = {};
+        has_buiding = false;
+        z = 0;
+      }
+    });
 
-      parser.on('cdata', text => {
-        if (is_place && is_ground) {
-          if (ground_count === 3) {
-            station.name = text;
-          }
-        }
-      });
-      parser.on('text', text => {
-        if (is_place && is_ground) {
-          if (ground_count === 0) {
-            z = parseInt(text, 10);
-            station.coordinate = [x, y, z];
-          }
-          ground_count++;
-        }
-      });
+    parser.on('opentag', el => {
+      if (is_ground && el.name === 'gebaeude_t') {
+        has_buiding = true;
+      }
+    });
 
-      parser.on('end', () => {
-        resolved(stations);
-      });
+    parser.on('cdata', text => {
+      if (is_place && is_ground) {
+        if (ground_count === 3) {
+          station.name = text;
+        }
+      }
+    });
+    parser.on('text', text => {
+      if (is_place && is_ground) {
+        if (ground_count === 0) {
+          z = parseInt(text, 10);
+          station.coordinate = [x, y, z];
+        }
+        ground_count++;
+      }
     });
   },
   // 駅名を駅情報に統合
-  mergeStationNames(stations, labels) {
-    labels.map(l => {
-      stations = this.mergeStationInfoBy(stations, l.coordinate, { name: l.name });
+  mergeStationInfo() {
+    this.data.stations_names.map(l => {
+      this.mergeStationInfoBy(l.coordinate, { name: l.name });
     });
-    return stations;
+    this.data.stations_names = [];
   },
-  mergeStationInfoBy(stations, coordinate, info) {
-    return stations.map(s => {
+  mergeStationInfoBy(coordinate, info) {
+    this.data.stations = this.data.stations.map(s => {
       const has_coordinate = s.coordinates.findIndex(c => c[0] === coordinate[0] && c[1] === coordinate[1] && c[2] === coordinate[2]) !== -1;
       if (has_coordinate) {
         return Object.assign({}, s, info);

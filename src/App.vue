@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <FileReader @updateInfo="updateInfo" @fileSelected="setDefault" />
+    <h3>
+      セーブデータから路線情報とかを取得するやつ
+      <small>version 3.34</small>
+    </h3>
+    <FileReader @update="update" @select="setDefault" />
     <InfoTable :info="info" />
   </div>
 </template>
@@ -34,7 +38,7 @@ export default {
         players: []
       };
     },
-    updateInfo({ label, data }) {
+    update({ label, data }) {
       this.info[label] = data;
     }
   }

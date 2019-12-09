@@ -21,23 +21,30 @@ export default {
     }
   },
   methods: {
-    handleFileChange(e) {
-      this.onStatusChange(STATUSES.START);
-      this.$emit("fileSelected");
+    async handleFileChange(e) {
+      await this.onStatusChange(STATUSES.START);
+      this.$emit("select");
       const file = e.target.files[0];
       if (file) {
-        this.$emit("updateInfo", {
+        this.$emit("update", {
           label: "file",
           data: fileService.getFileInfo(file)
         });
-        simutransService.parse(file, this.onParseData, this.onStatusChange);
+        const data = await simutransService.parse(file, this.onStatusChange);
+
+        this.emitUpdate(data);
+
+        await this.onStatusChange(STATUSES.FINISHED);
       }
     },
-    onParseData(label, data) {
-      this.$emit("updateInfo", { label, data });
+    emitUpdate(data) {
+      this.$emit("update", { label: "simutrans", data: data.simutrans });
+      this.$emit("update", { label: "map", data: data.map });
+      this.$emit("update", { label: "stations", data: data.stations });
     },
-    onStatusChange(status) {
+    async onStatusChange(status) {
       this.status = status;
+      await this.$nextTick();
     }
   }
 };
