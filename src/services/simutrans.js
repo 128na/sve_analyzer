@@ -42,6 +42,7 @@ export default {
   createParser(resolved, reject) {
     const parser = sax.createStream(false, {
       lowercase: true,
+      trim: true,
     });
     parser.on('error', err => {
       console.log(err);
