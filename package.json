@@ -7,9 +7,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "bootstrap": "^4.4.1",
+    "bootstrap-vue": "^2.1.0",
     "core-js": "^3.4.3",
     "filereader-stream": "^2.0.0",
+    "node-sass": "^4.13.0",
     "node-xml-stream": "^1.0.2",
+    "sass-loader": "^8.0.0",
     "sax": "^1.2.4",
     "vue": "^2.6.10"
   },

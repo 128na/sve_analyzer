@@ -1,76 +1,83 @@
 <template>
   <div>
-    <hr />
-    <div>
-      <strong>ファイル情報</strong>
-      <p>名前：{{ file.name }}</p>
-      <p>サイズ：{{ toKB(file.size) }} KB</p>
-    </div>
-    <hr />
-    <div>
-      <strong>セーブデータ情報</strong>
-      <p>バージョン：{{ info.simutrans.version }}</p>
-      <p>pak：{{ info.simutrans.pak }}</p>
-    </div>
-    <hr />
-    <div>
-      <strong>マップ情報</strong>
-      <p>No：{{ info.map.no }}</p>
-      <p>横：{{ info.map.width }}</p>
-      <p>縦：{{ info.map.depth }}</p>
-    </div>
-    <hr />
-    <div>
-      <strong>プレーヤー情報</strong>
-      <table>
-        <thead>
-          <th>ID</th>
-          <th>名前</th>
-          <th>タイプ</th>
-        </thead>
-        <tbody>
-          <tr v-for="player in info.players" :key="player.id">
-            <td>{{ player.id }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ playerTypeText(player.type) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <hr />
-    <div>
-      <strong>駅情報</strong>
-      <table>
-        <thead>
-          <th>ID</th>
-          <th>所有者ID</th>
-          <th>名前</th>
-          <th>総タイル数</th>
-        </thead>
-        <tbody>
-          <tr v-for="station in info.stations" :key="station.id">
-            <td>{{ station.id }}</td>
-            <td>{{ station.player_id }}</td>
-            <td>{{ station.name }}</td>
-            <td>{{ station.coordinates.length }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <b-card-group>
+      <b-card header="ファイル" class="mb-3">
+        <dl>
+          <dt>名前</dt>
+          <dd>{{ file.name }}</dd>
+          <dt>サイズ</dt>
+          <dd>{{ sizeFromat(file.size) }}</dd>
+          <dt>形式</dt>
+          <dd>{{ file.type }}</dd>
+        </dl>
+      </b-card>
+      <b-card header="セーブデータ" class="mb-3">
+        <dl>
+          <dt>Ver</dt>
+          <dd>{{ info.simutrans.version }}</dd>
+          <dt>Pak</dt>
+          <dd>{{ info.simutrans.pak }}</dd>
+        </dl>
+      </b-card>
+      <b-card header="マップ" class="mb-3">
+        <dl>
+          <dt>No</dt>
+          <dd>{{ info.map.no }}</dd>
+          <dt>横</dt>
+          <dd>{{ info.map.width }}</dd>
+          <dt>縦</dt>
+          <dd>{{ info.map.depth }}</dd>
+        </dl>
+      </b-card>
+    </b-card-group>
+    <b-card header="会社一覧" class="mb-3">
+      <b-table hover :items="players"></b-table>
+    </b-card>
+    <b-card header="駅一覧" class="mb-2">
+      <StationsTable :info="info" />
+    </b-card>
   </div>
 </template>
 <script>
-import { toKB } from "../helper";
+import { sizeFromat } from "../helper";
 import { PLAYER_TYPES } from "../const";
+import StationsTable from "./tables/StationsTable.vue";
 export default {
   props: ["file", "info"],
+  components: { StationsTable },
+  computed: {
+    players() {
+      return this.info.players.map(p =>
+        Object.assign(p, { type: this.playerTypeText(p.type) })
+      );
+    },
+    stations() {
+      return this.info.stations.map(s => {
+        return {
+          id: s.id,
+          player: this.getPlayer(s.player_id).name,
+          name: s.name,
+          tiles: s.coordinates.length
+        };
+      });
+    }
+  },
   methods: {
-    toKB(number = 0) {
-      return toKB(number);
+    sizeFromat(number) {
+      return number > 0 ? sizeFromat(number) : "--";
     },
     playerTypeText(type) {
       return PLAYER_TYPES[type] || "??";
+    },
+    getPlayer(player_id) {
+      return this.info.players.find(p => p.id === player_id);
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+dl {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+}
+</style>

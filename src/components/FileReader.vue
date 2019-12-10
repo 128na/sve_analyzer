@@ -1,7 +1,18 @@
 <template>
   <div>
-    <input type="file" @change="handleFileChange" />
-    <p>進捗：{{ step }}</p>
+    <div class="form-group">
+      <b-form-file
+        v-model="file"
+        placeholder="ファイルを選択、ドロップ"
+        drop-placeholder="ドロップ"
+        accept=".sve"
+        browse-text="選択"
+      ></b-form-file>
+    </div>
+    <p>
+      進捗：
+      <span>{{ step }}</span>
+    </p>
   </div>
 </template>
 <script>
@@ -11,34 +22,45 @@ import simutransService from "../services/simutrans";
 export default {
   data() {
     return {
-      step: STEPS.READY
+      file: null,
+      step: null
     };
   },
+  watch: {
+    file(file) {
+      if (file) {
+        this.handleFileChange(file);
+      }
+    },
+    step(step) {
+      document.title = `Sve Analyzer [${step}]`;
+    }
+  },
+  created() {
+    this.step = STEPS.READY;
+  },
   methods: {
-    async handleFileChange(e) {
+    async handleFileChange(file) {
       console.time("app");
       this.$emit("select");
-      const file = e.target.files[0];
-      if (file) {
-        this.$emit("updateFile", fileService.getFileInfo(file));
+      this.$emit("updateFile", fileService.getFileInfo(file));
 
-        console.time("parse");
-        this.step = STEPS.PARSE;
-        await simutransService.parse(file);
-        console.timeEnd("parse");
+      console.time("parse");
+      this.step = STEPS.PARSE;
+      await simutransService.parse(file);
+      console.timeEnd("parse");
 
-        console.time("merge");
-        this.step = STEPS.MERGE;
-        const data = simutransService.merge();
-        this.step = STEPS.RENDER;
-        simutransService.init();
-        console.timeEnd("merge");
+      console.time("merge");
+      this.step = STEPS.MERGE;
+      const data = simutransService.merge();
+      this.step = STEPS.RENDER;
+      simutransService.init();
+      console.timeEnd("merge");
 
-        console.log(data);
-        this.$emit("updateInfo", { data });
-        this.step = STEPS.FINISHED;
-        console.timeEnd("app");
-      }
+      console.log(data);
+      this.$emit("updateInfo", { data });
+      this.step = STEPS.FINISHED;
+      console.timeEnd("app");
     }
   }
 };
