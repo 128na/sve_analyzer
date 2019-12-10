@@ -42,7 +42,7 @@ export default {
   methods: {
     async handleFileChange(file) {
       console.time("app");
-      this.$emit("select");
+      this.$emit("begin");
       this.$emit("updateFile", fileService.getFileInfo(file));
 
       console.time("parse");
@@ -59,6 +59,7 @@ export default {
 
       console.log(data);
       this.$emit("updateInfo", { data });
+      this.$emit("end");
       this.step = STEPS.FINISHED;
       console.timeEnd("app");
     }
