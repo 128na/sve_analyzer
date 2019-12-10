@@ -2,16 +2,19 @@
   <div id="app">
     <Header />
     <b-container class="container my-4">
-      <p class="mb-5">
+      <p class="mb-4">
         Simutrans のセーブデータを解析し、駅一覧などを表示できます。
         <br />対応形式 : xml、対応バージョン : 120.0~
         <br />時間目安：1280x640マス、約82万‬タイルで5分程度（PCスペックによります）
       </p>
-      <div class="mb-5">
-        <FileReader @updateFile="updateFile" @updateInfo="updateInfo" @select="setDefault" />
+      <div class="mb-4">
+        <FileReader @updateFile="updateFile" @updateInfo="updateInfo" @begin="begin" @end="end" />
+      </div>
+      <div class="mb-4">
+        <ExportData :info="info" v-show="success" />
       </div>
       <div>
-        <InfoTable :file="file" :info="info" />
+        <InfoTable :file="file" :info="info" v-show="success" />
       </div>
     </b-container>
   </div>
@@ -19,6 +22,7 @@
 
 <script>
 import Header from "./components/Header.vue";
+import ExportData from "./components/ExportData.vue";
 import FileReader from "./components/FileReader.vue";
 import InfoTable from "./components/InfoTable.vue";
 import "./scss/style.scss";
@@ -28,10 +32,12 @@ export default {
   components: {
     Header,
     InfoTable,
-    FileReader
+    FileReader,
+    ExportData
   },
   data() {
     return {
+      success: false,
       file: null,
       info: null
     };
@@ -41,6 +47,13 @@ export default {
     // this.setDefault();
   },
   methods: {
+    begin() {
+      this.success = false;
+      this.setDefault();
+    },
+    end() {
+      this.success = true;
+    },
     setDefault() {
       this.file = {
         name: "--",

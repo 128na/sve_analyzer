@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="mb-2">
-      <b-button v-b-toggle.collapse-1 variant="secondary" size="sm">フィルター</b-button>
-      <b-collapse id="collapse-1" class="mt-2">
+      <b-button v-b-toggle.filter variant="secondary" size="sm">フィルター</b-button>
+      <b-collapse id="filter" class="mt-2">
         <b-form-group label="会社名">
           <b-form-checkbox-group v-model="selected_players" :options="players"></b-form-checkbox-group>
         </b-form-group>
