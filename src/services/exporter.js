@@ -10,7 +10,6 @@ export default {
     ];
   },
   download({ type, data, name }) {
-    console.log(type)
     switch (type) {
       case 'json':
         return this.jsonExporter(data, name);
@@ -28,7 +27,7 @@ export default {
   },
   csvExporter(data, name) {
     // sjis変換
-    const unicode_arr = [...this.toCSV(data)].map(str => str.charCodeAt(str));
+    const unicode_arr = [...this.toCSV(data)].map(str => str.charCodeAt(0));
     const converted_arr = Encoding.convert(unicode_arr, 'SJIS', 'unicode');
     const sjis_arr = new Uint8Array(converted_arr);
 
