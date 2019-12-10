@@ -3,13 +3,14 @@
     <Header />
     <b-container class="container my-4">
       <p class="mb-5">
-        セーブデータを解析し、駅一覧などを表示できます。
+        Simutrans のセーブデータを解析し、駅一覧などを表示できます。
         <br />対応形式 : xml、対応バージョン : 120.0~
+        <br />時間目安：1280x640マス、約82万‬タイルで5分程度（PCスペックによります）
       </p>
       <div class="mb-5">
         <FileReader @updateFile="updateFile" @updateInfo="updateInfo" @select="setDefault" />
       </div>
-      <div class>
+      <div>
         <InfoTable :file="file" :info="info" />
       </div>
     </b-container>

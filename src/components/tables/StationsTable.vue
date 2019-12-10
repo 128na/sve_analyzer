@@ -47,7 +47,7 @@ export default {
       return this.info.stations.filter(
         s =>
           this.selected_players.includes(s.player_id) &&
-          s.name.includes(this.keyword)
+          (s.name || "").includes(this.keyword)
       );
     },
     stations() {
