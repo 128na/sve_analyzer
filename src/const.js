@@ -1,8 +1,8 @@
 const STEPS = {
   READY: "--",
-  PARSE: "xmlパース",
-  MERGE: "統合",
-  RENDER: "表示",
+  PARSE: "xmlパース中...",
+  MERGE: "統合中...",
+  RENDER: "描画中...",
   FINISHED: "完了",
 };
 const PLAYER_TYPES = [
