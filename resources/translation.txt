@@ -1,5 +1,3 @@
-memo
-
 einstellungen
   setting
 
@@ -11,10 +9,6 @@ gebaeude
 
 haltestelle
   station
-
-
-haltestelle_t
-  [koord3d] 駅座標一覧
 
 spieler
   player
