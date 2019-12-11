@@ -48,7 +48,6 @@ export default {
     };
   },
   created() {
-    // this.setMock();
     this.setDefault();
   },
   methods: {
@@ -63,43 +62,6 @@ export default {
         stations: [],
         lines: [],
         players: [],
-        lines: []
-      };
-    },
-    //表示テスト用モック
-    setMock() {
-      this.file = {
-        name: "mock.sve",
-        size: 1145141919,
-        type: "xml"
-      };
-      this.info = {
-        simutrans: {
-          version: "121.9.9",
-          pak: "pak-128 mock"
-        },
-        map: {
-          width: 1024,
-          depth: 768,
-          no: 334
-        },
-        stations: [...Array(6)]
-          .map((_, p) =>
-            [...Array(20)].map((__, i) => {
-              const id = p * 20 + i + 1;
-              return {
-                id: id,
-                player_id: p,
-                name: `テスト${p}-${i}駅`,
-                coordinates: [[p, i, 0]]
-              };
-            })
-          )
-          .flat(),
-        lines: [],
-        players: [...Array(6)].map((_, p) => {
-          return { id: p, name: `会社 ${p}`, type: 1 };
-        }),
         lines: []
       };
     },
