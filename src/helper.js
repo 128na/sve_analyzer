@@ -5,6 +5,10 @@ const sizeFromat = function (number) {
   return `${intl.format(number / 2 ** (10 * order))} ${prefixes[order]}`;
 };
 const escCSV = function (txt = '') {
+  if (typeof txt === 'number') {
+    return txt;
+  }
+
   txt = txt.replace("\"", "\"\"");
   txt = txt.replace("\\", "\\\\");
   return `"${txt}"`;

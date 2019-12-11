@@ -48,7 +48,7 @@ export default {
   computed: {
     players() {
       return this.info.players.map(p =>
-        Object.assign(p, { type: this.playerTypeText(p.type) })
+        Object.assign({}, p, { type: this.playerTypeText(p.type) })
       );
     },
     stations() {
