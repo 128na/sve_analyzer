@@ -39,8 +39,10 @@ export default {
       keyword: ""
     };
   },
-  created() {
-    this.selected_players = this.players.map(p => p.value);
+  watch: {
+    info(info) {
+      this.selected_players = info.players.map(p => p.id);
+    }
   },
   computed: {
     searched_stations() {

@@ -2,18 +2,51 @@
 <html lang="ja">
 
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W51EXR0QH7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+
+      const env = "<%= NODE_ENV %>";
+      const ga = "<%= VUE_APP_GA %>";
+      if (env === "production" && ga) {
+        gtag("js", new Date());
+        gtag("config", ga);
+      }
+    }
+  </script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="author" content="<%= VUE_APP_AUTHOR %>">
+  <meta name="keywords" content="<%= VUE_APP_KEYWORDS %>">
+  <meta name="description" content="<%= VUE_APP_DESCRIPTION %>">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="<%= VUE_APP_NAME %>">
+  <meta property="og:description" content="<%= VUE_APP_DESCRIPTION %>">
+  <meta property="og:url" content="<%= VUE_APP_URL %>">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="<%= VUE_APP_URL %>">
+  <meta name="twitter:creator" content="<%= VUE_APP_AUTHOR %>">
+  <meta name="twitter:image" content="<%= BASE_URL %>ogp.png">
+  <meta name="theme-color" content="#1c95e4">
+
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-  <title>Sve Analyzer</title>
+  <title><%= VUE_APP_NAME %></title>
+  <style>
+    body,
+    #app {
+      min-height: 100vh;
+    }
+  </style>
 </head>
 
 <body>
-  <noscript>
-    <strong>We're sorry but sve_analyzer doesn't work properly without JavaScript enabled. Please enable it to
-      continue.</strong>
-  </noscript>
+  <noscript>にゃーん</noscript>
   <div id="app"></div>
   <!-- built files will be auto injected -->
 </body>

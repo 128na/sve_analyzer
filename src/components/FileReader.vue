@@ -7,6 +7,7 @@
         drop-placeholder="ドロップ"
         accept=".sve"
         browse-text="選択"
+        :disabled="!can_select"
       ></b-form-file>
     </div>
     <p>
@@ -33,35 +34,58 @@ export default {
       }
     },
     step(step) {
-      document.title = `Sve Analyzer [${step}]`;
+      document.title = `${process.env.VUE_APP_NAME} [${step}]`;
     }
   },
   created() {
     this.step = STEPS.READY;
   },
+  computed: {
+    can_select() {
+      return [STEPS.READY, STEPS.FINISHED].includes(this.step);
+    }
+  },
   methods: {
     async handleFileChange(file) {
-      console.time("app");
-      this.$emit("begin");
-      this.$emit("updateFile", fileService.getFileInfo(file));
+      performance.clearMarks();
+      performance.mark("start");
+      this.step = STEPS.START;
+      this.$emit("update");
+      const data = {
+        file: fileService.getFileInfo(file),
+        info: null
+      };
 
-      console.time("parse");
+      performance.mark("parse");
       this.step = STEPS.PARSE;
       await simutransService.parse(file);
-      console.timeEnd("parse");
 
-      console.time("merge");
+      performance.mark("merge");
       this.step = STEPS.MERGE;
-      const data = simutransService.merge();
+      data.info = simutransService.merge();
       this.step = STEPS.RENDER;
       simutransService.init();
-      console.timeEnd("merge");
 
       console.log(data);
-      this.$emit("updateInfo", { data });
+
+      performance.mark("render");
+      this.$emit("update", data);
       this.$emit("end");
       this.step = STEPS.FINISHED;
-      console.timeEnd("app");
+      performance.mark("finish");
+
+      const marks = performance.getEntriesByType("mark");
+      console.log(
+        marks.map((m, i) => {
+          return {
+            name: m.name,
+            duration:
+              i < marks.length - 1
+                ? marks[i + 1].startTime - m.startTime
+                : m.startTime - marks[0].startTime
+          };
+        })
+      );
     }
   }
 };

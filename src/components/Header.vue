@@ -2,7 +2,7 @@
   <div>
     <b-navbar toggleable="sm" type="light" variant="white" class="global-menu">
       <b-container>
-        <b-navbar-brand href="#">Sve Analyzer</b-navbar-brand>
+        <b-navbar-brand href="#">{{ app_name }}</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -15,6 +15,14 @@
     </b-navbar>
   </div>
 </template>
+<script>
+export default {
+  computed: {
+    app_name: () => process.env.VUE_APP_NAME,
+    app_version: () => process.env.VUE_APP_VERSION
+  }
+};
+</script>
 <style lang="scss" scoped>
 .global-menu {
   border-top: solid 4px var(--primary);
