@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <header>
     <b-navbar toggleable="sm" type="light" variant="white" class="global-menu">
       <b-container>
         <b-navbar-brand>{{ app_name }}</b-navbar-brand>
@@ -19,7 +19,7 @@
         </b-collapse>
       </b-container>
     </b-navbar>
-  </div>
+  </header>
 </template>
 <script>
 import { PAGES } from "../const";
@@ -48,5 +48,12 @@ export default {
 }
 .nav-link.active {
   font-weight: 900;
+}
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 72;
 }
 </style>

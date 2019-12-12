@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-dark footer">
+  <footer class="bg-dark">
     <b-container class>
       <small>
         <span class="text-white mr-2">version {{ app_version }}</span>
@@ -16,10 +16,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.footer {
+footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 72;
 }
 </style>

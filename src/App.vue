@@ -116,6 +116,7 @@ export default {
     .content {
       position: absolute;
       width: 100%;
+      margin-top: 64px;
       margin-bottom: 64px;
     }
   }
