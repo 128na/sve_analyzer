@@ -1,7 +1,10 @@
 <template>
-  <footer class="bg-dark">
-    <b-container class="footer">
-      <small class="text-white">version {{ app_version }}</small>
+  <footer class="bg-dark footer">
+    <b-container class>
+      <small>
+        <span class="text-white mr-2">version {{ app_version }}</span>
+        <a href="https://github.com/128na/sve_analyzer" target="_blank" class="text-white">GitHub</a>
+      </small>
     </b-container>
   </footer>
 </template>
@@ -12,3 +15,11 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+</style>

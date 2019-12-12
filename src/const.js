@@ -12,6 +12,12 @@ const PLAYER_TYPES = [
   'AI 貨物',
   'AI 旅客',
   'スクリプトAI',
-]
+];
 
-export { STEPS, PLAYER_TYPES };
+const PAGES = {
+  TOP: "トップ",
+  STATIONS: "駅・会社一覧",
+  LINES: "路線一覧"
+};
+
+export { STEPS, PLAYER_TYPES, PAGES };

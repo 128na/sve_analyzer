@@ -1,6 +1,13 @@
-// 駅一覧テーブル
+// 路線一覧テーブル
 <template>
-  <CustomTable :items="stations" :fields="fields" :players="info.players" />
+  <div>
+    <CustomTable
+      :items="lines"
+      :fields="fields"
+      :players="info.players"
+      @row-clicked="item=>$emit('row-clicked',item.id)"
+    />
+  </div>
 </template>
 <script>
 import CustomTable from "./CustomTable.vue";
@@ -13,18 +20,18 @@ export default {
         { key: "id", sortable: true },
         { key: "player", sortable: true },
         { key: "name", sortable: true },
-        { key: "tile_counts", sortable: true }
+        { key: "stop_counts", sortable: true }
       ]
     };
   },
   computed: {
-    stations() {
-      return this.info.stations.map(s => {
+    lines() {
+      return this.info.lines.map(l => {
         return {
-          id: s.id,
-          player: this.getPlayer(s.player_id).name,
-          name: s.name,
-          tile_counts: s.coordinates.length
+          id: l.id,
+          player: this.getPlayer(l.player_id).name,
+          name: l.name,
+          stop_counts: l.stops.length || 0
         };
       });
     }

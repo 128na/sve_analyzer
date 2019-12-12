@@ -11,7 +11,7 @@
         </small>
       </p>
       <b-form-group label="エクスポート">
-        <b-form-select v-model="format" :options="formats" />
+        <b-form-select v-model="format" :options="formats" :disabled="!can_export" />
       </b-form-group>
       <b-button variant="primary" @click="handleExport" :disabled="!can_export">エクスポート</b-button>
       <hr />
@@ -29,8 +29,8 @@
   </div>
 </template>
 <script>
-import exportService from "../services/exporter";
-import importService from "../services/importer";
+import exportService from "../../services/exporter";
+import importService from "../../services/importer";
 export default {
   props: ["file", "info", "can_export"],
   data() {

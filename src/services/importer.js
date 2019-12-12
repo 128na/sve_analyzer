@@ -1,5 +1,3 @@
-import { resolve } from "any-promise";
-
 export default {
   async importFrom(file) {
     const text = await this.getFileContent(file);

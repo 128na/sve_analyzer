@@ -1,5 +1,7 @@
+// 概要テーブル
 <template>
   <div>
+    <h4>概要</h4>
     <b-card-group>
       <b-card header="ファイル" class="mb-3">
         <dl>
@@ -30,47 +32,15 @@
         </dl>
       </b-card>
     </b-card-group>
-    <b-card header="会社一覧" class="mb-3">
-      <b-table hover :items="players"></b-table>
-    </b-card>
-    <b-card header="駅一覧" class="mb-2">
-      <StationsTable :info="info" />
-    </b-card>
   </div>
 </template>
 <script>
-import { sizeFromat } from "../helper";
-import { PLAYER_TYPES } from "../const";
-import StationsTable from "./tables/StationsTable.vue";
+import { sizeFromat } from "../../helper";
 export default {
   props: ["file", "info"],
-  components: { StationsTable },
-  computed: {
-    players() {
-      return this.info.players.map(p =>
-        Object.assign({}, p, { type: this.playerTypeText(p.type) })
-      );
-    },
-    stations() {
-      return this.info.stations.map(s => {
-        return {
-          id: s.id,
-          player: this.getPlayer(s.player_id).name,
-          name: s.name,
-          tiles: s.coordinates.length
-        };
-      });
-    }
-  },
   methods: {
     sizeFromat(number) {
       return number > 0 ? sizeFromat(number) : "--";
-    },
-    playerTypeText(type) {
-      return PLAYER_TYPES[type] || "??";
-    },
-    getPlayer(player_id) {
-      return this.info.players.find(p => p.id === player_id);
     }
   }
 };
