@@ -1,3 +1,6 @@
+import Ajv from 'ajv';
+import schema from '../schema.json';
+
 export default {
   async importFrom(file) {
     const text = await this.getFileContent(file);
@@ -8,10 +11,13 @@ export default {
     return parsed;
   },
   validateStructure(obj) {
-    if (obj && obj.file && obj.app && obj.info) {
-      return;
+    const ajv = new Ajv({ allErrors: true });
+    const validate = ajv.compile(schema);
+    const valid = validate(obj);
+
+    if (!valid) {
+      throw new Error(validate.errors.map(e => e.message).join("\n"));
     }
-    throw new Error('invalid structure');
   },
   getFileContent(file) {
     return new Promise((resolve, reject) => {

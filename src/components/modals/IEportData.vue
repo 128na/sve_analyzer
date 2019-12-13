@@ -58,8 +58,7 @@ export default {
       await this.$emit("update");
       await this.$nextTick();
       const data = await importService.importFrom(this.import_file).catch(e => {
-        console.error(e);
-        this.toastDanger("インポートに失敗しました");
+        this.toastDanger(`インポートに失敗しました：\n ${e.message}`);
       });
       await this.$nextTick();
       if (data) {
