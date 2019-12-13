@@ -19,22 +19,12 @@
 </template>
 
 <script>
-import Header from "./components/Header.vue";
-import Footer from "./components/Footer.vue";
-import TopPage from "./components/pages/TopPage";
 import StationsPage from "./components/pages/StationsPage";
 import LinesPage from "./components/pages/LinesPage";
 import "./scss/style.scss";
 import { PAGES } from "./const";
 export default {
   name: "app",
-  components: {
-    Header,
-    Footer,
-    TopPage,
-    StationsPage,
-    LinesPage
-  },
   data() {
     return {
       file: null,
@@ -80,6 +70,8 @@ export default {
     },
     update(data = null) {
       if (data) {
+        // モック用停車駅数目標値
+        const threshold = 1 - 20 / data.info.stations.length;
         const mock_lines = [...Array(3)]
           .map((_, p_index) =>
             [...Array(20)].map((__, l_index) => {
@@ -88,7 +80,7 @@ export default {
                 player_id: p_index,
                 name: `路線 ${p_index}-${l_index}`,
                 stops: data.info.stations
-                  .filter(() => Math.random() > 0.5)
+                  .filter(() => Math.random() > threshold)
                   .sort((a, b) => Math.random() - 0.5)
                   .map(s => s.coordinates[0])
               };

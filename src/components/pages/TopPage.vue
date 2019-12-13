@@ -19,17 +19,9 @@
   </div>
 </template>
 <script>
-import IEportData from "../modals/IEportData.vue";
-import FileReader from "../FileReader.vue";
-import SummaryTable from "../tables/SummaryTable.vue";
 export default {
   name: "TopPage",
   props: ["file", "info"],
-  components: {
-    SummaryTable,
-    FileReader,
-    IEportData
-  },
   data() {
     return {
       analyzed: false

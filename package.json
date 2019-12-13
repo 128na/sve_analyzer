@@ -18,7 +18,8 @@
     "node-xml-stream": "^1.0.2",
     "sass-loader": "^8.0.0",
     "sax": "^1.2.4",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-clipboard2": "^0.3.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",

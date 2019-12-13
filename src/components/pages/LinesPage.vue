@@ -7,13 +7,10 @@
   </div>
 </template>
 <script>
-import LinesTable from "../tables/LinesTable.vue";
-import LineDetail from "../modals/LineDetail.vue";
 import cacheService from "../../services/cache";
 export default {
   name: "LinesPage",
   props: ["info"],
-  components: { LinesTable, LineDetail },
   data() {
     return {
       line_detail: null

@@ -9,11 +9,8 @@
   </div>
 </template>
 <script>
-import StationsTable from "../tables/StationsTable.vue";
-import PlayersTable from "../tables/PlayersTable.vue";
 export default {
   name: "StationsPage",
-  props: ["info"],
-  components: { StationsTable, PlayersTable }
+  props: ["info"]
 };
 </script>

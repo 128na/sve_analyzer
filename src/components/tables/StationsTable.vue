@@ -3,10 +3,8 @@
   <CustomTable :items="stations" :fields="fields" :players="info.players" />
 </template>
 <script>
-import CustomTable from "./CustomTable.vue";
 export default {
   props: ["info"],
-  components: { CustomTable },
   data() {
     return {
       fields: [

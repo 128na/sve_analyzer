@@ -31,8 +31,10 @@
 <script>
 import exportService from "../../services/exporter";
 import importService from "../../services/importer";
+import { toastControl } from "../../mixins";
 export default {
   props: ["file", "info", "can_export"],
+  mixins: [toastControl],
   data() {
     return {
       formats: exportService.getFormats(),
@@ -49,14 +51,21 @@ export default {
         info: this.info
       };
 
-      return exportService.download({ type, data, name });
+      exportService.download({ type, data, name });
+      this.toast("エクスポートしました");
     },
     async handleImport() {
       await this.$emit("update");
       await this.$nextTick();
-      const data = await importService.importFrom(this.import_file);
+      const data = await importService.importFrom(this.import_file).catch(e => {
+        console.error(e);
+        this.toastDanger("インポートに失敗しました");
+      });
       await this.$nextTick();
-      await this.$emit("update", data);
+      if (data) {
+        await this.$emit("update", data);
+        this.toast("インポートしました");
+      }
     }
   }
 };

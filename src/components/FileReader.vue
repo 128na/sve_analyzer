@@ -7,24 +7,22 @@
         drop-placeholder="ドロップ"
         accept=".sve"
         browse-text="選択"
-        :disabled="!can_select"
+        :disabled="working"
       ></b-form-file>
     </div>
-    <p>
-      進捗：
-      <span>{{ step }}</span>
-    </p>
   </div>
 </template>
 <script>
 import { STEPS } from "../const";
 import fileService from "../services/file";
 import simutransService from "../services/simutrans";
+import { toastControl } from "../mixins";
 export default {
+  mixins: [toastControl],
   data() {
     return {
       file: null,
-      step: null
+      working: false
     };
   },
   watch: {
@@ -32,24 +30,23 @@ export default {
       if (file) {
         this.handleFileChange(file);
       }
-    },
-    step(step) {
-      document.title = `${process.env.VUE_APP_NAME} [${step}]`;
     }
   },
   created() {
-    this.step = STEPS.READY;
-  },
-  computed: {
-    can_select() {
-      return [STEPS.READY, STEPS.FINISHED].includes(this.step);
-    }
+    this.updateStep(STEPS.READY);
   },
   methods: {
+    updateStep(step, show_toast = false) {
+      document.title = `${process.env.VUE_APP_NAME} [${step}]`;
+      if (show_toast) {
+        this.toast(step);
+      }
+    },
     async handleFileChange(file) {
       performance.clearMarks();
       performance.mark("start");
-      this.step = STEPS.START;
+      this.working = true;
+      this.updateStep(STEPS.START, true);
       this.$emit("update");
       const data = {
         file: fileService.getFileInfo(file),
@@ -57,13 +54,13 @@ export default {
       };
 
       performance.mark("parse");
-      this.step = STEPS.PARSE;
+      this.updateStep(STEPS.PARSE);
       await simutransService.parse(file);
 
       performance.mark("merge");
-      this.step = STEPS.MERGE;
+      this.updateStep(STEPS.MERGE);
       data.info = simutransService.merge();
-      this.step = STEPS.RENDER;
+      this.updateStep(STEPS.RENDER);
       simutransService.init();
 
       console.log(data);
@@ -71,7 +68,8 @@ export default {
       performance.mark("render");
       this.$emit("update", data);
       this.$emit("end");
-      this.step = STEPS.FINISHED;
+      this.updateStep(STEPS.FINISHED, true);
+      this.working = false;
       performance.mark("finish");
 
       const marks = performance.getEntriesByType("mark");
