@@ -13,11 +13,14 @@ import events from 'events';
  */
 events.EventEmitter.defaultMaxListeners = 334;
 
-import Parsers from './parsers/parsers';
+import zlib from 'zlib';
+import bz2 from 'unbzip2-stream';
 
+import Parsers from './parsers/parsers';
+import { SUPPORTED_SAVEFORMATS } from '../const';
 export default {
-  async parse(file) {
-    const data = await this.parseContent(file);
+  async parse(file, type) {
+    const data = await this.parseContent(file, type);
     this.mergeStationInfo(data);
     this.mergePlayerInfo(data);
 
@@ -57,11 +60,19 @@ export default {
     };
     return parser;
   },
-  parseContent(file) {
+  parseContent(file, type) {
     return new Promise((resolved, reject) => {
       const data = {};
-      const stream = fileReaderStream(file);
-      const parser = this.createParser(resolved, reject, data);
+      let stream = fileReaderStream(file);
+
+      if (type === SUPPORTED_SAVEFORMATS.xml_zipped) {
+        stream = stream.pipe(zlib.Unzip());
+      }
+      if (type === SUPPORTED_SAVEFORMATS.xml_bzip2) {
+        stream = stream.pipe(bz2());
+      }
+
+      const parser = this.createParser(resolved, reject, data, type);
 
       Parsers.Simutrans.parse(parser, data);
       Parsers.MapInfo.parse(parser, data);
@@ -72,6 +83,7 @@ export default {
       Parsers.PlayerSettings.parse(parser, data);
       Parsers.HaltInfos.parse(parser, data);
       Parsers.Lines.parse(parser, data);
+
       stream.pipe(parser);
     });
   },

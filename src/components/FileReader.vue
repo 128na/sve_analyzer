@@ -43,9 +43,8 @@ export default {
       }
     },
     async handleFileChange(file) {
-      const type = await fileService.getMimeType(file).catch(() => "xml");
+      const type = await fileService.getFormat(file);
       console.log(type);
-      return;
 
       performance.clearMarks();
       performance.mark("start");
@@ -59,7 +58,7 @@ export default {
 
       performance.mark("parse");
       this.updateStep(STEPS.PARSE);
-      data.info = await simutransService.parse(file);
+      data.info = await simutransService.parse(file, type);
       console.log(data);
 
       performance.mark("render");

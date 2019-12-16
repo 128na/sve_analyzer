@@ -50,4 +50,10 @@ const DEFAULT_PLAYER_NAMES = {
   'player 13': 'プレイヤー 13',
 };
 
-export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES };
+const SUPPORTED_SAVEFORMATS = {
+  xml: 'xml',
+  xml_zipped: 'xml_zipped',
+  xml_bzip2: 'xml_bzip2',
+};
+
+export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS };
