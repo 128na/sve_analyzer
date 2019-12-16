@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     handleExport() {
-      const name = "download";
+      const name = this.file.name;
       const type = this.format;
       const data = {
         file: this.file,
