@@ -2,10 +2,14 @@
   <b-modal id="line_detail" title="路線詳細" :hide-footer="true">
     <div v-if="line_detail">
       <dl>
+        <dt>ID</dt>
+        <dd>{{ line_detail.line.id }}</dd>
         <dt>会社</dt>
-        <dd>{{ line_detail.player.name}}</dd>
+        <dd>{{ line_detail.player.name }}</dd>
+        <dt>種類</dt>
+        <dd>{{ getWayType(line_detail.line.type) }}</dd>
         <dt>路線名</dt>
-        <dd>{{ line_detail.line.name}}</dd>
+        <dd>{{ line_detail.line.name }}</dd>
         <dt>停車駅一覧</dt>
         <dd>
           <div class="text-right mb-2">
@@ -25,6 +29,7 @@
 </template>
 <script>
 import { toastControl } from "../../mixins";
+import { WAY_TYPES } from "../../const";
 export default {
   props: ["line_detail"],
   mixins: [toastControl],
@@ -51,6 +56,9 @@ export default {
     },
     onError: function(e) {
       this.toastDanger("クリップボードにコピーできませんでした");
+    },
+    getWayType(type) {
+      return WAY_TYPES[type] || "?";
     }
   }
 };

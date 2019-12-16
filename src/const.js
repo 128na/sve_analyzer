@@ -20,4 +20,15 @@ const PAGES = {
   LINES: "路線一覧"
 };
 
-export { STEPS, PLAYER_TYPES, PAGES };
+const WAY_TYPES = {
+  1: '自動車',
+  2: '鉄道',
+  3: '船舶',
+  4: '航空',
+  5: 'モノレール',
+  6: '市電',
+  7: 'リニア',
+  8: 'ナローゲージ',
+}
+
+export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES };

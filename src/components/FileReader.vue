@@ -55,19 +55,12 @@ export default {
 
       performance.mark("parse");
       this.updateStep(STEPS.PARSE);
-      await simutransService.parse(file);
-
-      performance.mark("merge");
-      this.updateStep(STEPS.MERGE);
-      data.info = simutransService.merge();
-      this.updateStep(STEPS.RENDER);
-      simutransService.init();
-
+      data.info = await simutransService.parse(file);
       console.log(data);
 
       performance.mark("render");
+      this.updateStep(STEPS.RENDER);
       this.$emit("update", data);
-      this.$emit("end");
       this.updateStep(STEPS.FINISHED, true);
       this.working = false;
       performance.mark("finish");
