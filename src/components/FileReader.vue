@@ -43,6 +43,10 @@ export default {
       }
     },
     async handleFileChange(file) {
+      const type = await fileService.getMimeType(file).catch(() => "xml");
+      console.log(type);
+      return;
+
       performance.clearMarks();
       performance.mark("start");
       this.working = true;

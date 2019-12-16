@@ -1,3 +1,6 @@
+/**
+ * @see https://github.com/epoberezkin/ajv
+ */
 import Ajv from 'ajv';
 import schema from '../schema.json';
 

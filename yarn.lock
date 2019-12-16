@@ -3323,6 +3323,18 @@ file-saver@^2.0.2:
   resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.2.tgz#06d6e728a9ea2df2cce2f8d9e84dfcdc338ec17a"
   integrity sha512-Wz3c3XQ5xroCxd1G8b7yL0Ehkf0TC9oYC6buPFkNnU9EnaPlifeAFCyCh+iewXTyFRcg0a6j3J7FmJsIhlhBdw==
 
+file-type-stream@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/file-type-stream/-/file-type-stream-1.0.0.tgz#dd0a1edd1f5fe973623ed6fe16be19c8931b44c3"
+  integrity sha1-3Qoe3R9f6XNiPtb+Fr4ZyJMbRMM=
+  dependencies:
+    file-type "^3.8.0"
+
+file-type@^3.8.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-3.9.0.tgz#257a078384d1db8087bc449d107d52a52672b9e9"
+  integrity sha1-JXoHg4TR24CHvESdEH1SpSZyuek=
+
 filereader-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/filereader-stream/-/filereader-stream-2.0.0.tgz#b30d5a5bf6d14c638d7eb55e193abb986f8048a1"
