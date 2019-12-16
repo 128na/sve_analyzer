@@ -43,6 +43,9 @@ export default {
       }
     },
     async handleFileChange(file) {
+      const type = await fileService.getFormat(file);
+      console.log(type);
+
       performance.clearMarks();
       performance.mark("start");
       this.working = true;
@@ -55,7 +58,7 @@ export default {
 
       performance.mark("parse");
       this.updateStep(STEPS.PARSE);
-      data.info = await simutransService.parse(file);
+      data.info = await simutransService.parse(file, type);
       console.log(data);
 
       performance.mark("render");
