@@ -21,6 +21,11 @@ import { SUPPORTED_SAVEFORMATS } from '../const';
 export default {
   async parse(file, type) {
     const data = await this.parseContent(file, type);
+
+    if (data.simutrans === undefined) {
+      throw new Error('解析できませんでした。');
+    }
+
     this.mergeStationInfo(data);
     this.mergePlayerInfo(data);
 

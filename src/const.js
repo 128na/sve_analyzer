@@ -17,7 +17,8 @@ const PLAYER_TYPES = [
 const PAGES = {
   TOP: "トップ",
   STATIONS: "駅・会社一覧",
-  LINES: "路線一覧"
+  LINES: "路線一覧",
+  USAGE: "使い方"
 };
 
 const WAY_TYPES = {

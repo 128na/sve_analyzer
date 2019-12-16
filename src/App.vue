@@ -21,6 +21,7 @@
 <script>
 import StationsPage from "./components/pages/StationsPage";
 import LinesPage from "./components/pages/LinesPage";
+import UsagePage from "./components/pages/UsagePage";
 import "./scss/style.scss";
 import { PAGES } from "./const";
 export default {
@@ -42,6 +43,8 @@ export default {
           return StationsPage;
         case PAGES.LINES:
           return LinesPage;
+        case PAGES.USAGE:
+          return UsagePage;
         default:
           return null;
       }
