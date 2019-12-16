@@ -16,11 +16,11 @@ export default {
   data() {
     return {
       fields: [
-        { key: "id", sortable: true },
-        { key: "player", sortable: true },
-        { key: "type", sortable: true },
-        { key: "name", sortable: true },
-        { key: "stop_counts", sortable: true }
+        { key: "id", sortable: true, label: "ID" },
+        { key: "player", sortable: true, label: "会社名" },
+        { key: "type", sortable: true, label: "種類" },
+        { key: "name", sortable: true, label: "路線名" },
+        { key: "stop_counts", sortable: true, label: "停車駅数" }
       ]
     };
   }
