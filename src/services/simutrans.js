@@ -19,8 +19,8 @@ import bz2 from 'unbzip2-stream';
 import Parsers from './parsers/parsers';
 import { SUPPORTED_SAVEFORMATS } from '../const';
 export default {
-  async parse(file, type) {
-    const data = await this.parseContent(file, type);
+  async parse(file, type, onUpdateProgress) {
+    const data = await this.parseContent(file, type, onUpdateProgress);
 
     if (data.simutrans === undefined) {
       throw new Error('解析できませんでした。');
@@ -37,10 +37,38 @@ export default {
       lines: data.lines,
     };
   },
-  createParser(resolved, reject, data) {
+  parseContent(file, type, onUpdateProgress) {
+    return new Promise((resolved, reject) => {
+      const data = {};
+      let stream = fileReaderStream(file);
+
+      if (type === SUPPORTED_SAVEFORMATS.xml_zipped) {
+        stream = stream.pipe(zlib.Unzip());
+      }
+      if (type === SUPPORTED_SAVEFORMATS.xml_bzip2) {
+        stream = stream.pipe(bz2());
+      }
+
+      const parser = this.createParser(resolved, reject, data, onUpdateProgress);
+
+      Parsers.Simutrans.parse(parser, data);
+      Parsers.MapInfo.parse(parser, data);
+      Parsers.Stations.parse(parser, data);
+      Parsers.StationNames.parse(parser, data);
+      Parsers.PlayerTypes.parse(parser, data);
+      Parsers.Players.parse(parser, data);
+      Parsers.PlayerSettings.parse(parser, data);
+      Parsers.HaltInfos.parse(parser, data);
+      Parsers.Lines.parse(parser, data);
+
+      stream.pipe(parser);
+    });
+  },
+  createParser(resolved, reject, data, onUpdateProgress) {
     const parser = sax.createStream(false, {
       lowercase: true,
       trim: true,
+      position: true
     });
     parser.on('error', err => {
       console.log(err);
@@ -49,6 +77,12 @@ export default {
     parser.on('end', () => {
       resolved(data);
     });
+    parser.on('opentag', () => {
+      if (parser._parser.line % 1000000 === 0) {
+        onUpdateProgress(`${parseInt(parser._parser.line / 10000)}万行目解析中...`);
+      }
+    });
+
     parser.onopenTagName = (tag, cb) => {
       parser.on('opentag', el => {
         if (el.name === tag) {
@@ -64,33 +98,6 @@ export default {
       })
     };
     return parser;
-  },
-  parseContent(file, type) {
-    return new Promise((resolved, reject) => {
-      const data = {};
-      let stream = fileReaderStream(file);
-
-      if (type === SUPPORTED_SAVEFORMATS.xml_zipped) {
-        stream = stream.pipe(zlib.Unzip());
-      }
-      if (type === SUPPORTED_SAVEFORMATS.xml_bzip2) {
-        stream = stream.pipe(bz2());
-      }
-
-      const parser = this.createParser(resolved, reject, data, type);
-
-      Parsers.Simutrans.parse(parser, data);
-      Parsers.MapInfo.parse(parser, data);
-      Parsers.Stations.parse(parser, data);
-      Parsers.StationNames.parse(parser, data);
-      Parsers.PlayerTypes.parse(parser, data);
-      Parsers.Players.parse(parser, data);
-      Parsers.PlayerSettings.parse(parser, data);
-      Parsers.HaltInfos.parse(parser, data);
-      Parsers.Lines.parse(parser, data);
-
-      stream.pipe(parser);
-    });
   },
 
   // 駅情報に駅名を統合

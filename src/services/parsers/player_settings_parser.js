@@ -16,7 +16,6 @@ export default {
     });
     parser.on('text', text => {
       if (is_einstellungen) {
-        // console.log(count, text);
         let act = false;
         switch (count_einstellungen) {
           case 70:

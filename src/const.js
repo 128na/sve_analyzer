@@ -1,7 +1,7 @@
 const STEPS = {
   READY: "--",
   START: "開始",
-  PARSE: "xmlパース中...",
+  PARSE: "解析...",
   MERGE: "統合中...",
   RENDER: "描画中...",
   FINISHED: "完了",

@@ -26,13 +26,13 @@ export default {
         players: this.info.players.map(p =>
           Object.assign({}, p, {
             type: this.getPlayerTypeText(p.type),
-            name: this.getPlayerName(p.name)
+            name: this.getPlayerName(p)
           })
         ),
         lines: this.info.lines.map(l => {
           return {
             id: l.id,
-            player: this.getPlayer(l.player_id).name,
+            player: this.getPlayerNameById(l.player_id),
             name: l.name,
             type: this.getWayType(l.type),
             stop_counts: l.stops.length || 0
@@ -45,9 +45,7 @@ export default {
     getPlayerTypeText(type) {
       return PLAYER_TYPES[type] || "??";
     },
-    getPlayerName(name) {
-      return DEFAULT_PLAYER_NAMES[name] || name;
-    },
+
     handleClick(id) {
       const line = this.getLine(id);
       const stations = this.getStations(line);
@@ -61,11 +59,17 @@ export default {
     getStations(line) {
       return line.stops.map(s => cacheService.findStationNameByCoodrinate(s));
     },
-    getPlayer(player_id) {
-      return this.info.players.find(p => p.id === player_id) || {};
-    },
+
     getWayType(type) {
       return WAY_TYPES[type] || "??";
+    },
+    getPlayerName(player) {
+      return DEFAULT_PLAYER_NAMES[player.name] || player.name;
+    },
+    getPlayerNameById(player_id) {
+      return this.getPlayerName(
+        this.info.players.find(p => p.id === player_id) || {}
+      );
     }
   }
 };

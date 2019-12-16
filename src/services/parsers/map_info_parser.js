@@ -6,16 +6,13 @@ export default {
     const data = {};
 
     parser.onopenTagName('einstellungen_t', () => {
-      // console.log('capture on');
       capture = true;
     });
     parser.oncloseTagName('einstellungen_t', () => {
-      // console.log('capture off');
       capture = false;
     });
     parser.on('text', text => {
       if (capture) {
-        // console.log(count, text);
         switch (count) {
           case 0:
             data.width = parseInt(text, 10);
@@ -25,7 +22,6 @@ export default {
             break;
           case 13:
             data.depth = parseInt(text, 10);
-            console.log('add map');
             result.map = data;
             break;
         }

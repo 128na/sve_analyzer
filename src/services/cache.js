@@ -7,7 +7,6 @@ export default {
         hash: s.coordinates.map(c => c.join(",")).join("/")
       }
     });
-    console.log('station cache created')
   },
   findStationNameByCoodrinate(coordinate) {
     const hash = coordinate.join(',');

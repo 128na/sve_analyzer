@@ -30,7 +30,6 @@ export default {
 
     parser.on('text', text => {
       if (is_players && is_player) {
-        console.log('add player type');
         result.player_types.push({ type: parseInt(text, 10) });
         if (result.player_types.length >= 16) {
           is_players = false;

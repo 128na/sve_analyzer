@@ -37,7 +37,6 @@ export default {
       if (is_place && name === 'grund_t') {
         is_ground = false;
         if (has_buiding && station.name && station.coordinate) {
-          console.log('add named bulding');
           result.station_names.push(station);
         }
         station = {};

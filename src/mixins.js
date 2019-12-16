@@ -7,7 +7,7 @@ const toastControl = {
       });
     },
     toastDanger(message) {
-      console.log(message);
+      console.warn(message);
       this.$bvToast.toast(message, {
         title: "通知",
         variant: "danger",

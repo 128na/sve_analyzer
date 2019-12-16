@@ -11,14 +11,11 @@ export default {
     let coordinate = [];
 
     parser.onopenTagName('haltestelle_t', () => {
-      // console.log('is_station on');
       is_station = true;
       station = { coordinates: [] };
     });
     parser.oncloseTagName('haltestelle_t', () => {
-      // console.log('is_station off');
       is_station = false;
-      console.log('add station');
       result.stations.push(station);
       count = 0;
     });
@@ -38,14 +35,12 @@ export default {
 
     parser.onopenTagName('koord3d', () => {
       if (is_station) {
-        // console.log('is_coordinate on');
         is_coordinate = true;
         coordinate = [];
       }
     });
     parser.oncloseTagName('koord3d', () => {
       if (is_station) {
-        // console.log('is_coordinate off');
         is_coordinate = false;
         if (!(coordinate[0] === -1 && coordinate[1] === -1 && coordinate[2] === -1)) {
           station.coordinates.push(coordinate);

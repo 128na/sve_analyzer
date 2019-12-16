@@ -28,6 +28,11 @@
           "$id": "#/properties/file/properties/size",
           "type": "integer",
           "title": "ファイルサイズ"
+        },
+        "type": {
+          "$id": "#/properties/file/properties/type",
+          "type": "string",
+          "title": "セーブデータ形式"
         }
       }
     },

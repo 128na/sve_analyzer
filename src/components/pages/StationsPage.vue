@@ -19,13 +19,13 @@ export default {
         players: this.info.players.map(p =>
           Object.assign({}, p, {
             type: this.getPlayerTypeText(p.type),
-            name: this.getPlayerName(p.name)
+            name: this.getPlayerName(p)
           })
         ),
         stations: this.info.stations.map(s => {
           return {
             id: s.id,
-            player: this.getPlayer(s.player_id).name,
+            player: this.getPlayerNameById(s.player_id),
             name: s.name,
             tile_counts: s.coordinates.length
           };
@@ -37,11 +37,13 @@ export default {
     getPlayerTypeText(type) {
       return PLAYER_TYPES[type] || "??";
     },
-    getPlayerName(name) {
-      return DEFAULT_PLAYER_NAMES[name] || name;
+    getPlayerName(player) {
+      return DEFAULT_PLAYER_NAMES[player.name] || player.name;
     },
-    getPlayer(player_id) {
-      return this.info.players.find(p => p.id === player_id) || {};
+    getPlayerNameById(player_id) {
+      return this.getPlayerName(
+        this.info.players.find(p => p.id === player_id) || {}
+      );
     }
   }
 };
