@@ -6,7 +6,8 @@ export default {
   getFormats() {
     return [
       { text: "JSON", value: "json" },
-      { text: "CSV", value: "csv" },
+      { text: "CSV(Windows用)", value: "csv_sjis" },
+      { text: "CSV(その他)", value: "csv" },
       { text: "テキスト", value: "txt" },
     ];
   },
@@ -18,6 +19,8 @@ export default {
         return this.jsonExporter(data, name);
       case 'csv':
         return this.csvExporter(data, name);
+      case 'csv_sjis':
+        return this.csvSjisExporter(data, name);
       case 'txt':
       default:
         return this.textExporter(data, name);
@@ -28,6 +31,10 @@ export default {
       `${name}.json`, { type: "data:application/json;charset=utf-8" });
   },
   csvExporter(data, name) {
+    return saveAs(new Blob([this.toCSV(data)]),
+      `${name}.csv`, { type: "data:text/csv;charset=utf-8" });
+  },
+  csvSjisExporter(data, name) {
     // sjis変換
     const unicode_arr = [...this.toCSV(data)].map(str => str.charCodeAt(0));
     const converted_arr = Encoding.convert(unicode_arr, 'SJIS', 'unicode');
@@ -63,7 +70,7 @@ export default {
     rows.push(['ID', '会社名', '種類']);
     rows = rows.concat(data.info.players.map(p => [
       escCSV(p.id),
-      escCSV(p.name),
+      escCSV(relationService.getPlayerName(p)),
       escCSV(p.type)
     ]));
     rows.push(['']);
