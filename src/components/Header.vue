@@ -2,7 +2,7 @@
   <header>
     <b-navbar toggleable="sm" type="light" variant="white" class="global-menu">
       <b-container>
-        <b-navbar-brand>{{ app_name }}</b-navbar-brand>
+        <b-navbar-brand @click="handleClick('トップ')">{{ app_name }}</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 

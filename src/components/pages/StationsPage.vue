@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import { PLAYER_TYPES, DEFAULT_PLAYER_NAMES } from "../../const";
+import relationService from "../../services/relation";
 export default {
   name: "StationsPage",
   props: ["info"],
@@ -18,32 +18,22 @@ export default {
       return Object.assign({}, this.info, {
         players: this.info.players.map(p =>
           Object.assign({}, p, {
-            type: this.getPlayerTypeText(p.type),
-            name: this.getPlayerName(p)
+            type: relationService.getPlayerTypeName(p.type),
+            name: relationService.getPlayerName(p)
           })
         ),
         stations: this.info.stations.map(s => {
           return {
             id: s.id,
-            player: this.getPlayerNameById(s.player_id),
+            player: relationService.getPlayerNameById(
+              this.info.players,
+              s.player_id
+            ),
             name: s.name,
             tile_counts: s.coordinates.length
           };
         })
       });
-    }
-  },
-  methods: {
-    getPlayerTypeText(type) {
-      return PLAYER_TYPES[type] || "??";
-    },
-    getPlayerName(player) {
-      return DEFAULT_PLAYER_NAMES[player.name] || player.name;
-    },
-    getPlayerNameById(player_id) {
-      return this.getPlayerName(
-        this.info.players.find(p => p.id === player_id) || {}
-      );
     }
   }
 };

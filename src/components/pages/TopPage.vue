@@ -1,13 +1,6 @@
 <template>
   <div>
-    <p class="mb-4">
-      Simutrans のセーブデータを解析し、駅一覧などを表示できます。
-      <small>
-        <br />対応形式：xml, xml_zipped, xml_bzip2
-        <br />対応バージョン：120.0~
-        <br />時間目安：1280x640マス、約82万‬タイルで5分程度（PCスペックによります）
-      </small>
-    </p>
+    <p class="mb-4">Simutrans のセーブデータを解析し、駅一覧などを表示できます。</p>
     <div class="mb-4">
       <FileReader @update="update" />
     </div>

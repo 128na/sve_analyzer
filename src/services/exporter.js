@@ -1,6 +1,7 @@
 import { saveAs } from 'file-saver';
 import Encoding from 'encoding-japanese';
 import { escCSV } from "../helper";
+import relationService from "./relation";
 export default {
   getFormats() {
     return [
@@ -42,56 +43,86 @@ export default {
   toCSV(data) {
     let rows = [];
 
-    rows.push(['[App Info]']);
-    rows.push(['version', escCSV(data.app.version)]);
+    rows.push(['[アプリ情報]']);
+    rows.push(['バージョン', escCSV(data.app.version)]);
     rows.push(['']);
-    rows.push(['[File Info]']);
-    rows.push(['name', escCSV(data.file.name)]);
-    rows.push(['size', escCSV(data.file.size)]);
+    rows.push(['[ファイル情報]']);
+    rows.push(['名前', escCSV(data.file.name)]);
+    rows.push(['サイズ', escCSV(data.file.size)]);
     rows.push(['']);
-    rows.push(['[Map Info]']);
-    rows.push(['No', escCSV(data.info.map.no)]);
-    rows.push(['width', escCSV(data.info.map.width)]);
-    rows.push(['depth', escCSV(data.info.map.depth)]);
+    rows.push(['[マップ情報]']);
+    rows.push(['マップ番号', escCSV(data.info.map.no)]);
+    rows.push(['横', escCSV(data.info.map.width)]);
+    rows.push(['縦', escCSV(data.info.map.depth)]);
     rows.push(['']);
-    rows.push(['[Simutrans Info]']);
-    rows.push(['version', escCSV(data.info.simutrans.version)]);
+    rows.push(['[Simutrans情報]']);
+    rows.push(['バージョン', escCSV(data.info.simutrans.version)]);
     rows.push(['pak', escCSV(data.info.simutrans.pak)]);
     rows.push(['']);
-    rows.push(['[Player Info]']);
-    rows.push(['id', 'name', 'type']);
-    rows = rows.concat(data.info.players.map(p => [escCSV(p.id), escCSV(p.name), escCSV(p.type)]));
+    rows.push(['[会社情報]']);
+    rows.push(['ID', '会社名', '種類']);
+    rows = rows.concat(data.info.players.map(p => [
+      escCSV(p.id),
+      escCSV(p.name),
+      escCSV(p.type)
+    ]));
     rows.push(['']);
-    rows.push(['[Station Info]']);
-    rows.push(['id', 'name', 'player_id', 'tiles']);
-    rows = rows.concat(data.info.stations.map(s => [escCSV(s.id), escCSV(s.name), escCSV(s.player_id), escCSV(s.coordinates.length)]));
+    rows.push(['[駅情報]']);
+    rows.push(['ID', '会社名', '駅名', 'タイル数']);
+    rows = rows.concat(data.info.stations.map(s => [
+      escCSV(s.id),
+      escCSV(relationService.getPlayerNameById(data.info.players, s.player_id)),
+      escCSV(s.name),
+      escCSV(s.coordinates.length)
+    ]));
+    rows.push(['']);
+    rows.push(['[路線情報]']);
+    rows.push(['ID', '会社名', '種類', '路線名', '停車駅数', '停車駅']);
+    rows = rows.concat(
+      data.info.lines.map(l => [
+        escCSV(l.id),
+        escCSV(relationService.getPlayerNameById(data.info.players, l.player_id)),
+        escCSV(relationService.getWayTypeName(l.type)),
+        escCSV(l.name),
+        escCSV(l.stops.length)
+      ]
+        .concat(l.stops.map(s => relationService.getStationNameById(data.info.stations, s.station_id)))
+      ));
 
     return rows.map(r => r.join(',')).join("\n");
   },
   toText(data) {
     let rows = [];
 
-    rows.push('[App Info]');
-    rows.push('version: ' + data.app.version);
+    rows.push('[アプリ情報]');
+    rows.push('バージョン: ' + data.app.version);
     rows.push('');
-    rows.push('[File Info]');
-    rows.push('name: ' + data.file.name);
-    rows.push('size: ' + data.file.size);
+    rows.push('[ファイル情報]');
+    rows.push('名前: ' + data.file.name);
+    rows.push('サイズ: ' + data.file.size);
     rows.push('');
-    rows.push('[Map Info]');
-    rows.push('No: ' + data.info.map.no);
-    rows.push('width: ' + data.info.map.width);
-    rows.push('depth: ' + data.info.map.depth);
+    rows.push('[マップ情報]');
+    rows.push('マップ番号: ' + data.info.map.no);
+    rows.push('横: ' + data.info.map.width);
+    rows.push('縦: ' + data.info.map.depth);
     rows.push('');
-    rows.push('[Simutrans Info]');
-    rows.push('version: ' + data.info.simutrans.version);
+    rows.push('[Simutrans情報]');
+    rows.push('バージョン: ' + data.info.simutrans.version);
     rows.push('pak: ' + data.info.simutrans.pak);
     rows.push('');
-    rows.push('[Player Info]');
-    rows = rows.concat(data.info.players.map(p => p.name));
+    rows.push('[会社情報]');
+    rows = rows.concat(data.info.players.map(p => relationService.getPlayerName(p)));
     rows.push('');
-    rows.push('[Station Info]');
+    rows.push('[駅情報]');
     rows = rows.concat(data.info.stations.map(s => s.name));
+    rows.push('');
+    rows.push('[路線情報]');
+    rows = rows.concat(
+      data.info.lines.map(l => [
+        l.name,
+        l.stops.map(s => relationService.getStationNameById(data.info.stations, s.station_id)).join(', ')
+      ].join("\n"))
+    );
 
     return rows.join("\n");
   },

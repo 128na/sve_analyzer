@@ -7,8 +7,7 @@
   </div>
 </template>
 <script>
-import cacheService from "../../services/cache";
-import { PLAYER_TYPES, DEFAULT_PLAYER_NAMES, WAY_TYPES } from "../../const";
+import relationService from "../../services/relation";
 export default {
   name: "LinesPage",
   props: ["info"],
@@ -17,24 +16,24 @@ export default {
       line_detail: null
     };
   },
-  created() {
-    cacheService.createStationsCache(this.info.stations);
-  },
   computed: {
     computed_info() {
       return Object.assign({}, this.info, {
         players: this.info.players.map(p =>
           Object.assign({}, p, {
-            type: this.getPlayerTypeText(p.type),
-            name: this.getPlayerName(p)
+            type: relationService.getPlayerTypeName(p.type),
+            name: relationService.getPlayerName(p)
           })
         ),
         lines: this.info.lines.map(l => {
           return {
             id: l.id,
-            player: this.getPlayerNameById(l.player_id),
+            player: relationService.getPlayerNameById(
+              this.info.players,
+              l.player_id
+            ),
             name: l.name,
-            type: this.getWayType(l.type),
+            type: relationService.getWayTypeName(l.type),
             stop_counts: l.stops.length || 0
           };
         })
@@ -42,34 +41,24 @@ export default {
     }
   },
   methods: {
-    getPlayerTypeText(type) {
-      return PLAYER_TYPES[type] || "??";
-    },
-
     handleClick(id) {
-      const line = this.getLine(id);
-      const stations = this.getStations(line);
-      const player = this.getPlayer(line.player_id);
-
-      this.line_detail = { line, stations, player };
-    },
-    getLine(id) {
-      return this.info.lines.find(l => l.id === id);
-    },
-    getStations(line) {
-      return line.stops.map(s => cacheService.findStationNameByCoodrinate(s));
-    },
-
-    getWayType(type) {
-      return WAY_TYPES[type] || "??";
-    },
-    getPlayerName(player) {
-      return DEFAULT_PLAYER_NAMES[player.name] || player.name;
-    },
-    getPlayerNameById(player_id) {
-      return this.getPlayerName(
-        this.info.players.find(p => p.id === player_id) || {}
+      const line = relationService.getLineById(this.info.lines, id);
+      const stations = relationService.getStationsByLine(
+        this.info.stations,
+        line
       );
+      const player = relationService.getPlayerById(
+        this.info.players,
+        line.player_id
+      );
+
+      this.line_detail = {
+        id,
+        stations,
+        player,
+        name: line.name,
+        type: line.type
+      };
     }
   }
 };

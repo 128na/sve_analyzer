@@ -61,6 +61,8 @@ export default {
         .parse(file, type, this.updateStep)
         .catch(e => this.toastDanger(e.message));
 
+      // console.log(data);
+
       performance.mark("render");
       this.updateStep(STEPS.RENDER);
       this.$emit("update", data);
@@ -70,14 +72,13 @@ export default {
 
       const marks = performance.getEntriesByType("mark");
       console.log(
-        "time",
-        marks.map((m, i) => {
+        ...marks.map((m, i) => {
           return {
             name: m.name,
-            duration:
-              i < marks.length - 1
+            duration_sec:
+              (i < marks.length - 1
                 ? marks[i + 1].startTime - m.startTime
-                : m.startTime - marks[0].startTime
+                : m.startTime - marks[0].startTime) / 1000
           };
         })
       );

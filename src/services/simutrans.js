@@ -18,6 +18,7 @@ import bz2 from 'unbzip2-stream';
 
 import Parsers from './parsers/parsers';
 import { SUPPORTED_SAVEFORMATS } from '../const';
+import relationService from './relation';
 export default {
   async parse(file, type, onUpdateProgress) {
     const data = await this.parseContent(file, type, onUpdateProgress);
@@ -28,6 +29,7 @@ export default {
 
     this.mergeStationInfo(data);
     this.mergePlayerInfo(data);
+    this.mergeStationIdToLines(data);
 
     return {
       simutrans: data.simutrans,
@@ -130,4 +132,18 @@ export default {
     data.players = data.players.map((p, i) => Object.assign(
       { slot: data.player_settings.slot[i] }, p));
   },
+
+  // 路線の停車座標に駅IDを追加する
+  mergeStationIdToLines(data) {
+    data.lines.map(line => {
+      line.stops = line.stops.map(stop => {
+        return {
+          station_id: relationService.getStationIdByCoodrinate(data.stations, stop),
+          coordinate: stop
+        };
+      });
+      return line;
+    })
+  },
+
 }

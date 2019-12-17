@@ -1,245 +1,215 @@
 {
-  "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://example.com/root.json",
   "type": "object",
-  "title": "Sve Analyzer データ",
-  "required": [
-    "file",
-    "info",
-    "app"
-  ],
   "properties": {
     "file": {
-      "$id": "#/properties/file",
       "type": "object",
-      "title": "セーブデータファイル情報",
-      "required": [
-        "name",
-        "size"
-      ],
       "properties": {
+        "type": {
+          "type": "string"
+        },
         "name": {
-          "$id": "#/properties/file/properties/name",
-          "type": "string",
-          "title": "ファイル名"
+          "type": "string"
         },
         "size": {
-          "$id": "#/properties/file/properties/size",
-          "type": "integer",
-          "title": "ファイルサイズ"
-        },
-        "type": {
-          "$id": "#/properties/file/properties/type",
-          "type": "string",
-          "title": "セーブデータ形式"
+          "type": "integer"
         }
-      }
+      },
+      "required": [
+        "type",
+        "name",
+        "size"
+      ]
     },
     "info": {
-      "$id": "#/properties/info",
       "type": "object",
-      "title": "解析情報",
+      "properties": {
+        "simutrans": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "pak": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "version",
+            "pak"
+          ]
+        },
+        "map": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "no": {
+              "type": "integer"
+            },
+            "depth": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "width",
+            "no",
+            "depth"
+          ]
+        },
+        "stations": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "coordinates": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "player_id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "coordinates",
+                "id",
+                "player_id",
+                "name"
+              ]
+            }
+          ]
+        },
+        "players": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "type"
+              ]
+            }
+          ]
+        },
+        "lines": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "player_id": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "stops": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "station_id": {
+                          "type": "integer"
+                        },
+                        "coordinate": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "integer"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "station_id",
+                        "coordinate"
+                      ]
+                    }
+                  ]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "player_id",
+                "type",
+                "stops",
+                "name",
+                "id"
+              ]
+            }
+          ]
+        }
+      },
       "required": [
         "simutrans",
         "map",
         "stations",
         "players",
         "lines"
-      ],
-      "properties": {
-        "simutrans": {
-          "$id": "#/properties/info/properties/simutrans",
-          "type": "object",
-          "title": "Simutrans情報",
-          "required": [
-            "version",
-            "pak"
-          ],
-          "properties": {
-            "version": {
-              "$id": "#/properties/info/properties/simutrans/properties/version",
-              "type": "string",
-              "title": "バージョン"
-            },
-            "pak": {
-              "$id": "#/properties/info/properties/simutrans/properties/pak",
-              "type": "string",
-              "title": "Pakサイズ名"
-            }
-          }
-        },
-        "map": {
-          "$id": "#/properties/info/properties/map",
-          "type": "object",
-          "title": "マップ情報",
-          "required": [
-            "width",
-            "no",
-            "depth"
-          ],
-          "properties": {
-            "width": {
-              "$id": "#/properties/info/properties/map/properties/width",
-              "type": "integer",
-              "title": "横"
-            },
-            "no": {
-              "$id": "#/properties/info/properties/map/properties/no",
-              "type": "integer",
-              "title": "マップ番号"
-            },
-            "depth": {
-              "$id": "#/properties/info/properties/map/properties/depth",
-              "type": "integer",
-              "title": "縦"
-            }
-          }
-        },
-        "stations": {
-          "$id": "#/properties/info/properties/stations",
-          "type": "array",
-          "title": "駅一覧",
-          "items": {
-            "$id": "#/properties/info/properties/stations/items",
-            "type": "object",
-            "title": "駅",
-            "required": [
-              "coordinates",
-              "id",
-              "player_id",
-              "name"
-            ],
-            "properties": {
-              "coordinates": {
-                "$id": "#/properties/info/properties/stations/items/properties/coordinates",
-                "type": "array",
-                "title": "座標一覧",
-                "items": {
-                  "$id": "#/properties/info/properties/stations/items/properties/coordinates/items",
-                  "type": "array",
-                  "title": "座標",
-                  "items": {
-                    "$id": "#/properties/info/properties/stations/items/properties/coordinates/items/items",
-                    "type": "integer",
-                    "title": "座標値"
-                  }
-                }
-              },
-              "id": {
-                "$id": "#/properties/info/properties/stations/items/properties/id",
-                "type": "integer",
-                "title": "駅ID"
-              },
-              "player_id": {
-                "$id": "#/properties/info/properties/stations/items/properties/player_id",
-                "type": "integer",
-                "title": "会社ID"
-              },
-              "name": {
-                "$id": "#/properties/info/properties/stations/items/properties/name",
-                "type": "string",
-                "title": "駅名"
-              }
-            }
-          }
-        },
-        "players": {
-          "$id": "#/properties/info/properties/players",
-          "type": "array",
-          "title": "会社一覧",
-          "items": {
-            "$id": "#/properties/info/properties/players/items",
-            "type": "object",
-            "title": "会社",
-            "required": [
-              "id",
-              "name",
-              "type"
-            ],
-            "properties": {
-              "id": {
-                "$id": "#/properties/info/properties/players/items/properties/id",
-                "type": "integer",
-                "title": "会社ID"
-              },
-              "name": {
-                "$id": "#/properties/info/properties/players/items/properties/name",
-                "type": "string",
-                "title": "会社名"
-              },
-              "type": {
-                "$id": "#/properties/info/properties/players/items/properties/type",
-                "type": "integer",
-                "title": "タイプ"
-              }
-            }
-          }
-        },
-        "lines": {
-          "$id": "#/properties/info/properties/lines",
-          "type": "array",
-          "title": "路線一覧",
-          "items": {
-            "$id": "#/properties/info/properties/lines/items",
-            "type": "object",
-            "title": "路線",
-            "required": [
-              "id",
-              "player_id",
-              "name",
-              "stops"
-            ],
-            "properties": {
-              "id": {
-                "$id": "#/properties/info/properties/lines/items/properties/id",
-                "type": "integer",
-                "title": "路線ID"
-              },
-              "player_id": {
-                "$id": "#/properties/info/properties/lines/items/properties/player_id",
-                "type": "integer",
-                "title": "会社ID"
-              },
-              "name": {
-                "$id": "#/properties/info/properties/lines/items/properties/name",
-                "type": "string",
-                "title": "路線名"
-              },
-              "stops": {
-                "$id": "#/properties/info/properties/lines/items/properties/stops",
-                "type": "array",
-                "title": "停車座標一覧",
-                "items": {
-                  "$id": "#/properties/info/properties/lines/items/properties/stops/items",
-                  "type": "array",
-                  "title": "座標",
-                  "items": {
-                    "$id": "#/properties/info/properties/lines/items/properties/stops/items/items",
-                    "type": "integer",
-                    "title": "座標値"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      ]
     },
     "app": {
-      "$id": "#/properties/app",
       "type": "object",
-      "title": "アプリ情報",
-      "required": [
-        "version"
-      ],
       "properties": {
         "version": {
-          "$id": "#/properties/app/properties/version",
-          "type": "string",
-          "title": "バージョン"
+          "type": "string"
         }
-      }
+      },
+      "required": [
+        "version"
+      ]
     }
-  }
+  },
+  "required": [
+    "file",
+    "info",
+    "app"
+  ]
 }
