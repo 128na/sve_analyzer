@@ -47,7 +47,7 @@ export default {
         this.info.stations,
         line
       );
-      const player = relationService.getPlayerById(
+      const player = relationService.getPlayerNameById(
         this.info.players,
         line.player_id
       );

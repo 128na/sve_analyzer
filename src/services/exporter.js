@@ -86,7 +86,10 @@ export default {
         escCSV(l.name),
         escCSV(l.stops.length)
       ]
-        .concat(l.stops.map(s => relationService.getStationNameById(data.info.stations, s.station_id)))
+        .concat(l.stops.map(s => s.station_id === null
+          ? "[中継点]"
+          : relationService.getStationNameById(data.info.stations, s.station_id)
+        ))
       ));
 
     return rows.map(r => r.join(',')).join("\n");
@@ -120,7 +123,10 @@ export default {
     rows = rows.concat(
       data.info.lines.map(l => [
         l.name,
-        l.stops.map(s => relationService.getStationNameById(data.info.stations, s.station_id)).join(', ')
+        l.stops.map(s => s.station_id === null
+          ? "[中継点]"
+          : relationService.getStationNameById(data.info.stations, s.station_id)
+        ).join(', ')
       ].join("\n"))
     );
 

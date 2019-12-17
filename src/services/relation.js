@@ -21,19 +21,22 @@ export default {
 
 
   // station
+  getStationById(stations, station_id) {
+    return stations.find(s => s.id === station_id) || {};
+  },
   getStationNameById(stations, station_id) {
-    return stations.find(s => s.id === station_id).name || "";
+    return this.getStationById(stations, station_id).name || "";
   },
   getStationByCoodrinate(stations, coordinate) {
     return stations.find(s =>
       s.coordinates.some(c => c[0] === coordinate[0] && c[1] === coordinate[1] && c[2] === coordinate[2])
-    );
+    ) || {};
   },
   getStationIdByCoodrinate(stations, coordinate) {
-    return this.getStationByCoodrinate(stations, coordinate).id;
+    return this.getStationByCoodrinate(stations, coordinate).id || null;
   },
   getStationsByLine(stations, line) {
-    return line.stops.map(stop => this.getStationByCoodrinate(stations, stop.coordinate))
+    return line.stops.map(stop => this.getStationById(stations, stop.station_id));
   },
 
   // line

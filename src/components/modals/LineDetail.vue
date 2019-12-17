@@ -5,7 +5,7 @@
         <dt>ID</dt>
         <dd>{{ line_detail.id }}</dd>
         <dt>会社</dt>
-        <dd>{{ line_detail.player.name }}</dd>
+        <dd>{{ line_detail.player }}</dd>
         <dt>種類</dt>
         <dd>{{ getWayTypeName(line_detail.type) }}</dd>
         <dt>路線名</dt>
@@ -42,8 +42,8 @@ export default {
     items() {
       return this.line_detail.stations.map(s => {
         return {
-          id: s.id,
-          name: s.name
+          id: s.id || "",
+          name: s.name || "[中継点]"
         };
       });
     },
