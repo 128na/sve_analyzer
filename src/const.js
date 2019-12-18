@@ -18,6 +18,7 @@ const PAGES = {
   TOP: "トップ",
   STATIONS: "駅・会社一覧",
   LINES: "路線一覧",
+  LINE_DIAGRAM: "路線図",
   USAGE: "使い方"
 };
 

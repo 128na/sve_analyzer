@@ -21,6 +21,7 @@
 <script>
 import StationsPage from "./components/pages/StationsPage";
 import LinesPage from "./components/pages/LinesPage";
+import LineDiagramPage from "./components/pages/LineDiagram";
 import UsagePage from "./components/pages/UsagePage";
 import "./scss/style.scss";
 import { PAGES } from "./const";
@@ -43,6 +44,8 @@ export default {
           return StationsPage;
         case PAGES.LINES:
           return LinesPage;
+        case PAGES.LINE_DIAGRAM:
+          return LineDiagramPage;
         case PAGES.USAGE:
           return UsagePage;
         default:
