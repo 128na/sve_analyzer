@@ -1,13 +1,15 @@
 <template>
   <div>
-    <p>路線図</p>
+    <div class="mb-2">
+      <b-btn variant="primary" size="sm" @click="download">SVGエクスポート</b-btn>
+    </div>
     <svg
       width="100%"
-      height="80vh"
       :viewBox="viewBox"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMin meet"
+      ref="svg"
     >
       <DiagramLine v-for="line in info.lines" :key="`line_${line.id}`" :line="line" />
       <DiagramStation
@@ -19,6 +21,7 @@
   </div>
 </template>
 <script>
+import exportService from "../../services/exporter";
 export default {
   name: "LineDiagram",
   props: ["info"],
@@ -32,6 +35,11 @@ export default {
       return line.stops
         .map(s => `${s.coordinate[0]},${s.coordinate[1]}`)
         .join(" ");
+    },
+    download() {
+      const serializer = new XMLSerializer();
+      const xml_str = serializer.serializeToString(this.$refs.svg);
+      return exportService.svgExporter(xml_str, "line_diagram");
     }
   }
 };

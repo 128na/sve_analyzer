@@ -7,7 +7,7 @@ export default {
   computed: {
     points() {
       return this.line.stops
-        .map(s => `${s.coordinate[0]},${s.coordinate[1]}`)
+        .map(s => [s.coordinate[0], s.coordinate[1]].join(","))
         .join(" ");
     }
   }

@@ -139,4 +139,9 @@ export default {
 
     return rows.join("\n");
   },
+  svgExporter(data, name) {
+    return saveAs(new Blob([data]),
+      `${name}.svg`, { type: "data:image/svg+xml;charset=utf-8" });
+  },
+
 };
