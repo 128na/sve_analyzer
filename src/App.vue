@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header :current_page="current_page" @change_page="change_page" />
-    <b-container class="my-4 main">
+    <b-container class="my-4 main bg-white px-0">
       <transition-group name="fade">
         <TopPage
           class="content"
@@ -94,7 +94,8 @@ export default {
     position: relative;
     .content {
       position: absolute;
-      width: 100%;
+      left: 16px;
+      right: 16px;
       margin-top: 64px;
       margin-bottom: 64px;
     }
