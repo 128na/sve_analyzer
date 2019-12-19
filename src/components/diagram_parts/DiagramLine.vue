@@ -1,9 +1,10 @@
 <template>
-  <polyline :points="points" fill="none" stroke="black" />
+  <polygon v-if="line.closed" :points="points" />
+  <polyline v-else :points="points" />
 </template>
 <script>
 export default {
-  props: ["line"],
+  props: ["line", "config"],
   computed: {
     points() {
       return this.line.stops

@@ -4,10 +4,20 @@
     <div class="mb-2">
       <b-button v-b-toggle.filter variant="secondary" size="sm" class="mb-2">項目フィルター</b-button>
       <b-collapse id="filter">
-        <b-form-group label="会社名">
+        <b-form-group>
+          <template v-slot:label>
+            <b-form-checkbox inline @change="togglePlayers">
+              <strong>会社名</strong>
+            </b-form-checkbox>
+          </template>
           <b-form-checkbox-group v-model="selected_players" :options="computed_players"></b-form-checkbox-group>
         </b-form-group>
-        <b-form-group label="種類">
+        <b-form-group>
+          <template v-slot:label>
+            <b-form-checkbox inline @change="toggleWayTypes">
+              <strong>種類</strong>
+            </b-form-checkbox>
+          </template>
           <b-form-checkbox-group
             v-if="way_type_filter"
             v-model="selected_way_types"
@@ -18,7 +28,25 @@
           <b-form-input v-model="keyword" placeholder="キーワード"></b-form-input>
         </b-form-group>
       </b-collapse>
-      <p>{{ items.length }}件中、{{ filtered_items.length }} 件該当</p>
+      <b-form-group>
+        <span>{{ items.length }}件中、{{ filtered_items.length }} 件該当</span>
+        <b-button
+          v-show="selectable"
+          variant="primary"
+          size="sm"
+          class="ml-2"
+          @click="selectAll"
+          :disabled="filtered_items.length===0"
+        >全て追加</b-button>
+        <b-button
+          v-show="selectable"
+          variant="danger"
+          size="sm"
+          class="ml-2"
+          @click="deselectAll"
+          :disabled="filtered_items.length===0"
+        >全て解除</b-button>
+      </b-form-group>
     </div>
     <b-pagination
       v-model="current"
@@ -30,6 +58,7 @@
 
     <b-table
       hover
+      :tbodyTrClass="trClass"
       :items="filtered_items"
       :fields="fields"
       :per-page="per_page"
@@ -59,6 +88,14 @@ export default {
     way_type_filter: {
       type: Boolean,
       default: false
+    },
+    selectable: {
+      type: Boolean,
+      default: false
+    },
+    selected_items: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -74,19 +111,15 @@ export default {
   },
   computed: {
     filtered_items() {
-      return this.items
-        .filter(item =>
-          this.way_type_filter
-            ? this.selected_way_types.includes(item.type)
-            : true
-        )
-        .filter(
-          item =>
-            this.selected_players.includes(item.player) &&
-            Object.values(item)
-              .join()
-              .includes(this.keyword)
+      return this.items.filter(item => {
+        if (this.isSelected(item)) {
+          return true;
+        }
+
+        return (
+          this.hasPlayer(item) && this.hasWayType(item) && this.hasKeyword(item)
         );
+      });
     },
     computed_players() {
       return this.players.map(p => {
@@ -100,6 +133,49 @@ export default {
           text: w
         };
       });
+    }
+  },
+  methods: {
+    togglePlayers() {
+      if (this.selected_players.length < this.computed_players.length) {
+        this.selected_players = this.computed_players.map(p => p.value);
+      } else {
+        this.selected_players = [];
+      }
+    },
+    toggleWayTypes() {
+      if (this.selected_way_types.length < this.computed_way_types.length) {
+        this.selected_way_types = this.computed_way_types.map(t => t.value);
+      } else {
+        this.selected_way_types = [];
+      }
+    },
+    isSelected(item) {
+      return this.selected_items.includes(item.id);
+    },
+    hasWayType(item) {
+      if (this.way_type_filter) {
+        return this.selected_way_types.includes(item.type);
+      }
+    },
+    hasPlayer(item) {
+      return this.selected_players.includes(item.player);
+    },
+    hasKeyword(item) {
+      return Object.values(item)
+        .join()
+        .includes(this.keyword);
+    },
+    trClass(item) {
+      if (this.isSelected(item)) {
+        return "bg-info";
+      }
+    },
+    selectAll() {
+      this.$emit("select_all", this.filtered_items);
+    },
+    deselectAll() {
+      this.$emit("select_all", []);
     }
   }
 };

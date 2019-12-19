@@ -139,8 +139,11 @@ export default {
 
     return rows.join("\n");
   },
-  svgExporter(data, name) {
-    return saveAs(new Blob([data]),
+  svgExporter(dom, name) {
+    const serializer = new XMLSerializer();
+    const xml_str = serializer.serializeToString(dom);
+
+    return saveAs(new Blob([xml_str]),
       `${name}.svg`, { type: "data:image/svg+xml;charset=utf-8" });
   },
 
