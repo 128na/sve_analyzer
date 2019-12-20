@@ -1,18 +1,17 @@
 <template>
-  <div>
+  <div v-if="is_ready">
     <b-form-group>
-      <b-button class="mr-2" v-b-modal.line-filter variant="secondary" size="sm">路線選択</b-button>
-      <b-button class="mr-2" v-b-modal.diagram-config variant="secondary" size="sm">表示設定</b-button>
+      <LineFilter
+        :info="info"
+        :selected_lines="selected_lines"
+        @select="select"
+        @select_all="select_all"
+      />
+      <DiagramConfig :info="info" :config="config" />
     </b-form-group>
-    <ModalDiagramConfig :info="info" :config="config" />
-    <ModalLineFilter
-      :info="info"
-      :selected_lines="selected_lines"
-      @select="select"
-      @select_all="select_all"
-    />
-    <DiagramSVG v-if="is_ready" :info="info" :config="config" :selected_lines="selected_lines" />
+    <DiagramSVG :info="info" :config="config" :selected_lines="selected_lines" />
   </div>
+  <div v-else>(´・ω・`)</div>
 </template>
 <script>
 export default {

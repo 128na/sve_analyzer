@@ -63,7 +63,7 @@
       </svg>
     </div>
     <b-form-group class="mt-2">
-      <b-form-checkbox v-model="adjust_scale" name="check-button" switch>自動調整</b-form-checkbox>
+      <b-form-checkbox v-model="adjust_scale" class="mb-2" switch>表示サイズ自動調整</b-form-checkbox>
       <b-button class="mr-2" variant="primary" size="sm" @click="svgExport">SVGエクスポート</b-button>
       <b-button class="mr-2" variant="primary" size="sm" @click="pngExport">PNGエクスポート</b-button>
     </b-form-group>
@@ -151,6 +151,6 @@ export default {
   width: 100%;
   height: 70vh;
   border: solid 1px var(--gray);
-  overflow: scroll;
+  overflow: auto;
 }
 </style>

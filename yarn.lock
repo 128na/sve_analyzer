@@ -742,6 +742,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@hyjiacan/vue-slideout@^2.3.5":
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@hyjiacan/vue-slideout/-/vue-slideout-2.3.5.tgz#44717e07d668b1e79051db0fbc45165a6c5eedc2"
+  integrity sha512-dhEvaQEedAdkrysSlSwWgsFqIJhs0Yg0FNfBUJpTFtNrnCsC0pK3RfOAgA1OQRF0W4RyCdewzfWjeysZyK43Ag==
+
 "@intervolga/optimize-cssnano-plugin@^1.0.5":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@intervolga/optimize-cssnano-plugin/-/optimize-cssnano-plugin-1.0.6.tgz#be7c7846128b88f6a9b1d1261a0ad06eb5c0fdf8"
