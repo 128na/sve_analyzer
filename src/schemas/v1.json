@@ -32,7 +32,7 @@
             },
             "pak": {
               "type": "string"
-            },
+            }
           },
           "required": [
             "version",
