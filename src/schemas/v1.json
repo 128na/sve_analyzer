@@ -33,14 +33,10 @@
             "pak": {
               "type": "string"
             },
-            "type": {
-              "type": "string"
-            }
           },
           "required": [
             "version",
-            "pak",
-            "type"
+            "pak"
           ]
         },
         "map": {
