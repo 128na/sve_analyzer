@@ -7,7 +7,7 @@
         </span>
         <span v-show="!hide">
           <b-form-input type="number" :step="step" size="sm" :value="value" @input="handle" />
-          <span>px</span>
+          <span>{{ append }}</span>
         </span>
         <span v-show="hide">非表示</span>
       </b-form>
@@ -33,6 +33,10 @@ export default {
     max: {
       type: Number,
       default: 16
+    },
+    append: {
+      type: String,
+      default: ""
     }
   },
   computed: {

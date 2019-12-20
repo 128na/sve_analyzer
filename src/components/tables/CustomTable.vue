@@ -6,7 +6,7 @@
       <b-collapse id="filter">
         <b-form-group>
           <template v-slot:label>
-            <b-form-checkbox inline v-model="select_all_player" @change="togglePlayers">
+            <b-form-checkbox inline :checked="select_all_player" @change="togglePlayers">
               <strong>会社名</strong>
             </b-form-checkbox>
           </template>
@@ -14,7 +14,7 @@
         </b-form-group>
         <b-form-group v-if="way_type_filter">
           <template v-slot:label>
-            <b-form-checkbox inline v-model="select_all_way_type" @change="toggleWayTypes">
+            <b-form-checkbox inline :checked="select_all_way_type" @change="toggleWayTypes">
               <strong>種類</strong>
             </b-form-checkbox>
           </template>

@@ -8,7 +8,12 @@ export default {
   computed: {
     points() {
       return this.line.stops
-        .map(s => [s.coordinate[0], s.coordinate[1]].join(","))
+        .map(s =>
+          [
+            (s.coordinate[0] * this.config.scale) / 100,
+            (s.coordinate[1] * this.config.scale) / 100
+          ].join(",")
+        )
         .join(" ");
     }
   }

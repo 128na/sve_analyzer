@@ -19,6 +19,7 @@
     "node-sass": "^4.13.0",
     "node-xml-stream": "^1.0.2",
     "sass-loader": "^8.0.0",
+    "save-svg-as-png": "^1.4.14",
     "sax": "^1.2.4",
     "unbzip2-stream": "^1.3.3",
     "vue": "^2.6.10",

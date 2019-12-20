@@ -1,3 +1,5 @@
+import { saveSvgAsPng } from "save-svg-as-png";
+
 import { saveAs } from 'file-saver';
 import Encoding from 'encoding-japanese';
 import { escCSV } from "../helper";
@@ -145,6 +147,9 @@ export default {
 
     return saveAs(new Blob([xml_str]),
       `${name}.svg`, { type: "data:image/svg+xml;charset=utf-8" });
+  },
+  pngExporter(dom, name) {
+    return saveSvgAsPng(dom, `${name}.png`);
   },
 
 };

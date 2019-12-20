@@ -6,10 +6,16 @@ export default {
   props: ["stop_label", "config"],
   computed: {
     x() {
-      return this.stop_label.coordinate[0] + Number(this.config.dx);
+      return (
+        (this.stop_label.coordinate[0] * this.config.scale) / 100 +
+        Number(this.config.stop_label.dx)
+      );
     },
     y() {
-      return this.stop_label.coordinate[1] - Number(this.config.dy);
+      return (
+        (this.stop_label.coordinate[1] * this.config.scale) / 100 -
+        Number(this.config.stop_label.dy)
+      );
     }
   }
 };

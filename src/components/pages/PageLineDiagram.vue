@@ -21,6 +21,10 @@ export default {
   data() {
     return {
       config: {
+        scale: 100,
+        padding: 16,
+        width: 0,
+        height: 0,
         padding: 16,
         line: {
           stroke: "#000000",
@@ -32,7 +36,7 @@ export default {
           size: 5,
           width: 1
         },
-        station: {
+        stop_label: {
           fill: "#000000",
           size: 16,
           dx: 10,
