@@ -107,7 +107,7 @@ export default {
   // 駅情報に駅名を統合
   mergeStationInfo(data) {
     data.station_names.map(l => {
-      this.mergeStationInfoBy(data, l.coordinate, l);
+      this.mergeStationInfoBy(data, l.coordinate, { name: l.name });
     });
     data.stations = data.stations.map(s => {
       if (s.name === undefined) {

@@ -1,10 +1,10 @@
-import validator from './validator';
+import validation from './validation';
 export default {
   async importFrom(file) {
     const text = await this.getFileContent(file);
     const parsed = JSON.parse(text);
 
-    validator.validate(parsed);
+    validation.validate(parsed);
 
     return parsed;
   },
