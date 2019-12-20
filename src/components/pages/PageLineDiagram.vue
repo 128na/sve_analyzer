@@ -23,13 +23,17 @@ export default {
       config: {
         padding: 16,
         line: {
+          stroke: "#000000",
           width: 1
         },
         stop: {
+          stroke: "#aaaaaa",
+          fill: "#ffffff",
           size: 5,
           width: 1
         },
         station: {
+          fill: "#000000",
           size: 16,
           dx: 10,
           dy: 0

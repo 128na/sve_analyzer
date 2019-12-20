@@ -6,26 +6,22 @@
       <b-collapse id="filter">
         <b-form-group>
           <template v-slot:label>
-            <b-form-checkbox inline @change="togglePlayers">
+            <b-form-checkbox inline v-model="select_all_player" @change="togglePlayers">
               <strong>会社名</strong>
             </b-form-checkbox>
           </template>
           <b-form-checkbox-group v-model="selected_players" :options="computed_players"></b-form-checkbox-group>
         </b-form-group>
-        <b-form-group>
+        <b-form-group v-if="way_type_filter">
           <template v-slot:label>
-            <b-form-checkbox inline @change="toggleWayTypes">
+            <b-form-checkbox inline v-model="select_all_way_type" @change="toggleWayTypes">
               <strong>種類</strong>
             </b-form-checkbox>
           </template>
-          <b-form-checkbox-group
-            v-if="way_type_filter"
-            v-model="selected_way_types"
-            :options="computed_way_types"
-          ></b-form-checkbox-group>
+          <b-form-checkbox-group v-model="selected_way_types" :options="computed_way_types"></b-form-checkbox-group>
         </b-form-group>
         <b-form-group label="キーワード">
-          <b-form-input v-model="keyword" placeholder="キーワード"></b-form-input>
+          <b-form-input type="search" v-model="keyword" placeholder="キーワード"></b-form-input>
         </b-form-group>
       </b-collapse>
       <b-form-group>
@@ -110,17 +106,6 @@ export default {
     };
   },
   computed: {
-    filtered_items() {
-      return this.items.filter(item => {
-        if (this.isSelected(item)) {
-          return true;
-        }
-
-        return (
-          this.hasPlayer(item) && this.hasWayType(item) && this.hasKeyword(item)
-        );
-      });
-    },
     computed_players() {
       return this.players.map(p => {
         return { text: p.name, value: p.name };
@@ -133,21 +118,38 @@ export default {
           text: w
         };
       });
+    },
+    select_all_player() {
+      return this.selected_players.length === this.computed_players.length;
+    },
+    select_all_way_type() {
+      return this.selected_way_types.length === this.computed_way_types.length;
+    },
+    filtered_items() {
+      return this.items.filter(item => {
+        if (this.isSelected(item)) {
+          return true;
+        }
+
+        return (
+          this.hasPlayer(item) && this.hasWayType(item) && this.hasKeyword(item)
+        );
+      });
     }
   },
   methods: {
     togglePlayers() {
-      if (this.selected_players.length < this.computed_players.length) {
-        this.selected_players = this.computed_players.map(p => p.value);
-      } else {
+      if (this.select_all_player) {
         this.selected_players = [];
+      } else {
+        this.selected_players = this.computed_players.map(p => p.value);
       }
     },
     toggleWayTypes() {
-      if (this.selected_way_types.length < this.computed_way_types.length) {
-        this.selected_way_types = this.computed_way_types.map(t => t.value);
-      } else {
+      if (this.select_all_way_type) {
         this.selected_way_types = [];
+      } else {
+        this.selected_way_types = this.computed_way_types.map(t => t.value);
       }
     },
     isSelected(item) {
@@ -157,6 +159,7 @@ export default {
       if (this.way_type_filter) {
         return this.selected_way_types.includes(item.type);
       }
+      return true;
     },
     hasPlayer(item) {
       return this.selected_players.includes(item.player);

@@ -13,7 +13,7 @@
         v-if="config.line.width"
         class="line-group"
         fill="none"
-        stroke="black"
+        :stroke="config.line.stroke"
         :stroke-width="config.line.width"
       >
         <DiagramLine v-for="line in lines" :key="line.id" :line="line" :config="config.line" />
@@ -22,7 +22,7 @@
         v-if="config.stop.width"
         class="stop-mark-group"
         fill="white"
-        stroke="black"
+        :stroke="config.stop.stroke"
         :stroke-width="config.stop.width"
       >
         <DiagramStopMark
@@ -30,6 +30,8 @@
           :key="index"
           :stop="stop"
           :config="config.stop"
+          :stroke="config.stop.stroke"
+          :fill="config.stop.fill"
         />
       </g>
       <g
@@ -37,6 +39,7 @@
         class="station-group"
         :font-family="font_family"
         :font-size="config.station.size"
+        :fill="config.station.fill"
       >
         <DiagramStopLabel
           v-for="(stop_label,index) in stop_labels"
