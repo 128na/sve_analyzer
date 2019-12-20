@@ -3,7 +3,13 @@
     <slide-out :visible="show" @close="toggleShow">
       <div class="mx-2 my-4">
         <b-form-group class="mb-4 border-bottom" label="表示">
-          <InputRange v-model.number="config.scale" :min="10" :max="1000" :step="10" append="%">距離</InputRange>
+          <InputRange
+            v-model.number="config.scale"
+            :min="10"
+            :max="1000"
+            :step="10"
+            append="%"
+          >駅間距離倍率</InputRange>
           <InputRange v-model.number="config.padding" :max="64" append="px">余白</InputRange>
         </b-form-group>
         <b-form-group class="mb-4 border-bottom" label="路線">

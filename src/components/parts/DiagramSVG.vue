@@ -63,6 +63,7 @@
       </svg>
     </div>
     <b-form-group class="mt-2">
+      <span>出力サイズ {{ render_size }}</span>
       <b-form-checkbox v-model="adjust_scale" class="mb-2" switch>表示サイズ自動調整</b-form-checkbox>
       <b-button class="mr-2" variant="primary" size="sm" @click="svgExport">SVGエクスポート</b-button>
       <b-button class="mr-2" variant="primary" size="sm" @click="pngExport">PNGエクスポート</b-button>
@@ -102,6 +103,9 @@ export default {
     },
     viewBox() {
       return `0 0 ${this.view_width} ${this.view_height}`;
+    },
+    render_size() {
+      return `${this.view_width} x ${this.view_height} px`;
     },
     transform() {
       return `translate(${this.config.padding}, ${this.config.padding})`;
