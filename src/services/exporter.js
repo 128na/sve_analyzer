@@ -1,7 +1,20 @@
+/**
+ * @see https://github.com/exupero/saveSvgAsPng
+ */
+import { saveSvgAsPng } from "save-svg-as-png";
+
+/**
+ * @see https://github.com/eligrey/FileSaver.js
+ */
 import { saveAs } from 'file-saver';
+
+/**
+ * @see https://github.com/polygonplanet/encoding.js/blob/master/README_ja.md
+ */
 import Encoding from 'encoding-japanese';
 import { escCSV } from "../helper";
 import relationService from "./relation";
+
 export default {
   getFormats() {
     return [
@@ -139,4 +152,15 @@ export default {
 
     return rows.join("\n");
   },
+  svgExporter(dom, name) {
+    const serializer = new XMLSerializer();
+    const xml_str = serializer.serializeToString(dom);
+
+    return saveAs(new Blob([xml_str]),
+      `${name}.svg`, { type: "data:image/svg+xml;charset=utf-8" });
+  },
+  pngExporter(dom, name) {
+    return saveSvgAsPng(dom, `${name}.png`);
+  },
+
 };

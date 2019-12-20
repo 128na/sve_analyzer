@@ -22,7 +22,7 @@
   </header>
 </template>
 <script>
-import { PAGES } from "../const";
+import { PAGES } from "../../const";
 export default {
   props: ["current_page"],
   computed: {

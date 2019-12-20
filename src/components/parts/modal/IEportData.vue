@@ -29,9 +29,9 @@
   </div>
 </template>
 <script>
-import exportService from "../../services/exporter";
-import importService from "../../services/importer";
-import { toastControl } from "../../mixins";
+import exportService from "../../../services/exporter";
+import importService from "../../../services/importer";
+import { toastControl } from "../../../mixins";
 export default {
   props: ["file", "info", "can_export"],
   mixins: [toastControl],

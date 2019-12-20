@@ -13,10 +13,10 @@
   </div>
 </template>
 <script>
-import { STEPS } from "../const";
-import fileService from "../services/file";
-import simutransService from "../services/simutrans";
-import { toastControl } from "../mixins";
+import { STEPS } from "../../const";
+import fileService from "../../services/file";
+import simutransService from "../../services/simutrans";
+import { toastControl } from "../../mixins";
 export default {
   mixins: [toastControl],
   data() {

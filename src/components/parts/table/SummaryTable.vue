@@ -8,7 +8,7 @@
           <dt>名前</dt>
           <dd>{{ file.name }}</dd>
           <dt>サイズ</dt>
-          <dd>{{ sizeFromat(file.size) }}</dd>
+          <dd>{{ siNumberFromat(file.size) }}B</dd>
           <dt>形式</dt>
           <dd>{{ file.type }}</dd>
         </dl>
@@ -35,12 +35,12 @@
   </div>
 </template>
 <script>
-import { sizeFromat } from "../../helper";
+import { siNumberFromat } from "../../../helper";
 export default {
   props: ["file", "info"],
   methods: {
-    sizeFromat(number) {
-      return number > 0 ? sizeFromat(number) : "--";
+    siNumberFromat(number) {
+      return number > 0 ? siNumberFromat(number) : "--";
     }
   }
 };

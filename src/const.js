@@ -18,6 +18,7 @@ const PAGES = {
   TOP: "トップ",
   STATIONS: "駅・会社一覧",
   LINES: "路線一覧",
+  LINE_DIAGRAM: "路線図",
   USAGE: "使い方"
 };
 
@@ -57,4 +58,38 @@ const SUPPORTED_SAVEFORMATS = {
   xml_bzip2: 'xml_bzip2',
 };
 
-export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS };
+/**
+ * プレーヤーカラー一覧
+ */
+const PLAYER_COLORS = {
+  1: '#7396bd',
+  2: '#a5a2a5',
+  3: '#3975ce',
+  4: '#c6b608',
+  5: '#b54110',
+  6: '#4a8e18',
+  7: '#00ae9c',
+  8: '#a545bd',
+  9: '#9c6100',
+  10: '#b53c8c',
+  11: '#73964a',
+  12: '#ad7952',
+  13: '#2949bd',
+  14: '#8c6dad',
+  15: '#ad6142',
+  16: '#63ae84',
+  17: '#ff0000',
+  18: '#00ff00',
+  19: '#0041ff',
+  20: '#ff8200',
+  21: '#427108',
+  22: '#ffff21',
+  23: '#843829',
+  24: '#8c4110',
+  25: '#949200',
+  26: '#84ae42',
+  27: '#636163',
+  28: '#736994',
+};
+
+export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLORS };

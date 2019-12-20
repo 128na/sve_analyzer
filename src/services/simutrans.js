@@ -18,6 +18,8 @@ import bz2 from 'unbzip2-stream';
 
 import Parsers from './parsers/parsers';
 import { SUPPORTED_SAVEFORMATS } from '../const';
+import { jpNumberFromat } from '../helper';
+
 import relationService from './relation';
 export default {
   async parse(file, type, onUpdateProgress) {
@@ -81,7 +83,7 @@ export default {
     });
     parser.on('opentag', () => {
       if (parser._parser.line % 1000000 === 0) {
-        onUpdateProgress(`${parseInt(parser._parser.line / 10000)}万行目解析中...`);
+        onUpdateProgress(`${jpNumberFromat(parser._parser.line)}行目解析中...`);
       }
     });
 

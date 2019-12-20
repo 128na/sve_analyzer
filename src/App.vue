@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <Header :current_page="current_page" @change_page="change_page" />
-    <b-container class="my-4 main">
+    <b-container class="my-4 main bg-white px-0">
       <transition-group name="fade">
-        <TopPage
+        <PageTop
           class="content"
           v-show="is_top"
           :file="file"
@@ -19,9 +19,10 @@
 </template>
 
 <script>
-import StationsPage from "./components/pages/StationsPage";
-import LinesPage from "./components/pages/LinesPage";
-import UsagePage from "./components/pages/UsagePage";
+import PageStations from "./components/pages/PageStations";
+import PageLines from "./components/pages/PageLines";
+import PageLineDiagram from "./components/pages/PageLineDiagram";
+import PageUsage from "./components/pages/PageUsage";
 import "./scss/style.scss";
 import { PAGES } from "./const";
 export default {
@@ -40,11 +41,13 @@ export default {
     component() {
       switch (this.current_page) {
         case PAGES.STATIONS:
-          return StationsPage;
+          return PageStations;
         case PAGES.LINES:
-          return LinesPage;
+          return PageLines;
+        case PAGES.LINE_DIAGRAM:
+          return PageLineDiagram;
         case PAGES.USAGE:
-          return UsagePage;
+          return PageUsage;
         default:
           return null;
       }
@@ -91,7 +94,8 @@ export default {
     position: relative;
     .content {
       position: absolute;
-      width: 100%;
+      left: 16px;
+      right: 16px;
       margin-top: 64px;
       margin-bottom: 64px;
     }
