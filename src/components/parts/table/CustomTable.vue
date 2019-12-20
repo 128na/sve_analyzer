@@ -66,7 +66,7 @@
   </div>
 </template>
 <script>
-import { WAY_TYPES } from "../../const";
+import { WAY_TYPES } from "../../../const";
 export default {
   props: {
     items: {

@@ -28,8 +28,8 @@
   </b-modal>
 </template>
 <script>
-import { toastControl } from "../../mixins";
-import { WAY_TYPES } from "../../const";
+import { toastControl } from "../../../mixins";
+import { WAY_TYPES } from "../../../const";
 export default {
   props: ["line_detail"],
   mixins: [toastControl],

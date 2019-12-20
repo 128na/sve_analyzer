@@ -71,9 +71,9 @@
   </div>
 </template>
 <script>
-import diagramService from "../../services/diagram";
-import relationService from "../../services/relation";
-import exportService from "../../services/exporter";
+import diagramService from "../../../services/diagram";
+import relationService from "../../../services/relation";
+import exportService from "../../../services/exporter";
 
 export default {
   props: ["info", "config", "selected_lines"],

@@ -18,7 +18,7 @@
   </span>
 </template>
 <script>
-import relationService from "../../services/relation";
+import relationService from "../../../services/relation";
 export default {
   props: ["info", "selected_lines"],
   data() {

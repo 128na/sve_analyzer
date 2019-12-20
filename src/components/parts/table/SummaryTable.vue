@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import { siNumberFromat } from "../../helper";
+import { siNumberFromat } from "../../../helper";
 export default {
   props: ["file", "info"],
   methods: {
