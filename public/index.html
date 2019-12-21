@@ -8,13 +8,13 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() {
       dataLayer.push(arguments);
+    }
 
-      const env = "<%= NODE_ENV %>";
-      const ga = "<%= VUE_APP_GA %>";
-      if (env === "production" && ga) {
-        gtag("js", new Date());
-        gtag("config", ga);
-      }
+    const env = "<%= NODE_ENV %>";
+    const ga_id = "<%= VUE_APP_GA %>";
+    if (env === "production" && ga_id) {
+      gtag("js", new Date());
+      gtag("config", ga_id);
     }
   </script>
   <meta charset="utf-8">
