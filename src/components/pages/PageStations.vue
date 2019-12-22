@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <b-card header="会社一覧" class="mb-3">
-      <PlayersTable :info="computed_info" />
-    </b-card>
-    <b-card header="駅一覧" class="mb-2">
-      <StationsTable :info="computed_info" />
-    </b-card>
-  </div>
+  <b-container class="page">
+    <div class="page-content">
+      <b-card header="会社一覧" class="mb-3">
+        <PlayersTable :info="computed_info" />
+      </b-card>
+      <b-card header="駅一覧" class="mb-2">
+        <StationsTable :info="computed_info" />
+      </b-card>
+    </div>
+  </b-container>
 </template>
 <script>
 import relationService from "../../services/relation";

@@ -9,6 +9,7 @@
         browse-text="選択"
         :disabled="working"
       ></b-form-file>
+      <small>対応セーブフォーマット：xml, xml_zipped, xml_bzip2</small>
     </div>
   </div>
 </template>

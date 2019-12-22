@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header :current_page="current_page" @change_page="change_page" />
-    <b-container class="my-4 main bg-white px-0">
+    <main>
       <transition-group name="fade">
         <PageTop
           class="content"
@@ -13,7 +13,7 @@
         />
         <div class="content" v-if="!is_top" :is="component" :info="info" :key="component.name" />
       </transition-group>
-    </b-container>
+    </main>
     <Footer />
   </div>
 </template>
@@ -89,16 +89,9 @@ export default {
 #app {
   display: flex;
   flex-direction: column;
-  .main {
-    flex: 1;
-    position: relative;
-    .content {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      margin-top: 64px;
-      margin-bottom: 64px;
-    }
+  main {
+    padding: 3.9rem 0 1.5rem 0;
+    height: 100vh;
   }
 }
 .fade-enter-active,

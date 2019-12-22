@@ -18,4 +18,15 @@ const toastControl = {
     },
   }
 };
-export { toastControl };
+
+const slideControl = {
+  props: {
+    show: { type: Boolean, default: false }
+  },
+  methods: {
+    close() {
+      this.$emit("close");
+    }
+  }
+}
+export { toastControl, slideControl };

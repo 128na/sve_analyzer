@@ -1,6 +1,6 @@
 <template>
   <header>
-    <b-navbar toggleable="sm" type="light" variant="white" class="global-menu">
+    <b-navbar toggleable="md" type="light" variant="white" class="global-menu">
       <b-container>
         <b-navbar-brand @click="handleClick('トップ')">{{ app_name }}</b-navbar-brand>
 

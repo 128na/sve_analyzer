@@ -92,4 +92,10 @@ const PLAYER_COLORS = {
   28: '#736994',
 };
 
-export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLORS };
+const SLIDES = {
+  line_filter: "line_filter",
+  diagram_config: "diagram_config",
+  diagram_export: "diagram_export",
+};
+
+export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLORS, SLIDES };

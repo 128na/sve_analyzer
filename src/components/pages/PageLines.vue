@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <b-card header="路線一覧" class="mb-3">
-      <LinesTable :info="computed_info" @row-clicked="handleClick" />
-    </b-card>
-    <LineDetail :line_detail="line_detail" />
-  </div>
+  <b-container class="page">
+    <div class="page-content">
+      <b-card header="路線一覧" class="mb-3">
+        <LinesTable :info="computed_info" @row-clicked="handleClick" />
+      </b-card>
+      <LineDetail :line_detail="line_detail" />
+    </div>
+  </b-container>
 </template>
 <script>
 import relationService from "../../services/relation";

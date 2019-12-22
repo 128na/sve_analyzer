@@ -1,34 +1,32 @@
 <template>
-  <span>
-    <slide-out :visible="show" size="600" @close="toggleShow" title="路線選択" maskColor="#0000">
-      <div class="mx-2 my-4">
-        <CustomTable
-          :items="computed_info.lines"
-          :fields="fields"
-          :players="computed_info.players"
-          :way_type_filter="true"
-          :selectable="true"
-          :selected_items="selected_lines"
-          @row-clicked="handleClick"
-          @select_all="handleSelectAll"
-        />
-      </div>
-    </slide-out>
-    <b-button class="mr-2" variant="secondary" size="sm" @click="toggleShow">路線選択</b-button>
-  </span>
+  <slide-out :visible="show" size="600" @close="close" title="路線選択" maskColor="#0000">
+    <div class="mx-2 my-4">
+      <CustomTable
+        :items="computed_info.lines"
+        :fields="fields"
+        :players="computed_info.players"
+        :way_type_filter="true"
+        :selectable="true"
+        :selected_items="selected_lines"
+        @row-clicked="handleClick"
+        @select_all="handleSelectAll"
+      />
+    </div>
+  </slide-out>
 </template>
 <script>
 import relationService from "../../../services/relation";
+import { slideControl } from "../../../mixins";
 export default {
   props: ["info", "selected_lines"],
+  mixins: [slideControl],
   data() {
     return {
       fields: [
         { key: "player", sortable: true, label: "会社名" },
         { key: "type", sortable: true, label: "種類" },
         { key: "name", sortable: true, label: "路線名" }
-      ],
-      show: false
+      ]
     };
   },
   computed: {
@@ -61,9 +59,6 @@ export default {
     },
     handleSelectAll(lines) {
       this.$emit("select_all", lines.map(i => i.id));
-    },
-    toggleShow() {
-      this.show = !this.show;
     }
   }
 };

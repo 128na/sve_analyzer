@@ -1,79 +1,74 @@
 <template>
-  <div>
-    <div class="svg-area">
-      <svg
-        :width="width"
-        :height="height"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        ref="svg"
-        :viewBox="viewBox"
-        preserveAspectRatio="xMinYMin meet"
-      >
-        <g :transform="transform">
-          <g
-            v-if="config.line.width"
-            class="line-group"
-            fill="none"
-            :stroke="config.line.stroke"
-            :stroke-width="config.line.width"
-          >
-            <DiagramLine v-for="line in lines" :key="line.id" :line="line" :config="config" />
-          </g>
-          <g
-            v-if="config.stop.width"
-            class="stop-mark-group"
-            fill="white"
-            :stroke="config.stop.stroke"
-            :stroke-width="config.stop.width"
-          >
-            <DiagramStopMark
-              v-for="(stop,index) in stops"
-              :key="index"
-              :stop="stop"
-              :config="config"
-              :stroke="config.stop.stroke"
-              :fill="config.stop.fill"
-            />
-          </g>
-          <g
-            v-if="config.stop_label.size"
-            class="station-group"
-            :font-family="font_family"
-            :font-size="config.stop_label.size"
-            :fill="config.stop_label.fill"
-          >
-            <DiagramStopLabel
-              v-for="(stop_label,index) in stop_labels"
-              :key="index"
-              :stop_label="stop_label"
-              :config="config"
-            />
-          </g>
-          <g>
-            <rect
-              x="0"
-              y="0"
-              :width="(Number(this.info.map.width) * this.config.scale) / 100"
-              :height="(Number(this.info.map.depth) * this.config.scale) / 100"
-              fill="none"
-            />
-          </g>
+  <div class="svg-area">
+    <svg
+      :width="width"
+      :height="height"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      ref="svg"
+      :viewBox="viewBox"
+      preserveAspectRatio="xMinYMin meet"
+    >
+      <g :transform="transform">
+        <g
+          v-if="config.line.width"
+          class="line-group"
+          fill="none"
+          :stroke="config.line.stroke"
+          :stroke-width="config.line.width"
+        >
+          <DiagramLine v-for="line in lines" :key="line.id" :line="line" :config="config" />
         </g>
-      </svg>
-    </div>
-    <b-form-group class="mt-2">
+        <g
+          v-if="config.stop.width"
+          class="stop-mark-group"
+          fill="white"
+          :stroke="config.stop.stroke"
+          :stroke-width="config.stop.width"
+        >
+          <DiagramStopMark
+            v-for="(stop,index) in stops"
+            :key="index"
+            :stop="stop"
+            :config="config"
+            :stroke="config.stop.stroke"
+            :fill="config.stop.fill"
+          />
+        </g>
+        <g
+          v-if="config.stop_label.size"
+          class="station-group"
+          :font-family="font_family"
+          :font-size="config.stop_label.size"
+          :fill="config.stop_label.fill"
+        >
+          <DiagramStopLabel
+            v-for="(stop_label,index) in stop_labels"
+            :key="index"
+            :stop_label="stop_label"
+            :config="config"
+          />
+        </g>
+        <g>
+          <rect
+            x="0"
+            y="0"
+            :width="(Number(this.info.map.width) * this.config.scale) / 100"
+            :height="(Number(this.info.map.depth) * this.config.scale) / 100"
+            fill="none"
+          />
+        </g>
+      </g>
+    </svg>
+    <div class="control-box">
       <span>出力サイズ {{ render_size }}</span>
       <b-form-checkbox v-model="adjust_scale" class="mb-2" switch>表示サイズ自動調整</b-form-checkbox>
-      <b-button class="mr-2" variant="primary" size="sm" @click="svgExport">SVGエクスポート</b-button>
-      <b-button class="mr-2" variant="primary" size="sm" @click="pngExport">PNGエクスポート</b-button>
-    </b-form-group>
+    </div>
   </div>
 </template>
 <script>
 import diagramService from "../../../services/diagram";
 import relationService from "../../../services/relation";
-import exportService from "../../../services/exporter";
 
 export default {
   props: ["info", "config", "selected_lines"],
@@ -139,22 +134,23 @@ export default {
     font_family() {
       return "'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif'";
     }
-  },
-  methods: {
-    svgExport() {
-      return exportService.svgExporter(this.$refs.svg, "line_diagram");
-    },
-    pngExport() {
-      return exportService.pngExporter(this.$refs.svg, "line_diagram");
-    }
   }
 };
 </script>
 <style lang="scss" scoped>
 .svg-area {
+  position: absolute;
   width: 100%;
-  height: 70vh;
-  border: solid 1px var(--gray);
+  height: 100vh;
+  margin: -3.9rem 0 -1.5rem 0;
+  padding: 3.9rem 0 1.5rem 0;
   overflow: auto;
+}
+.control-box {
+  position: fixed;
+  left: 1rem;
+  bottom: 1.5rem;
+  padding: 0.2rem;
+  background-color: #fffc;
 }
 </style>
