@@ -1,6 +1,6 @@
 <template>
   <span>
-    <slide-out :visible="show" @close="toggleShow">
+    <slide-out :visible="show" @close="toggleShow" title="表示設定" maskColor="#0000">
       <div class="mx-2 my-4">
         <b-form-group class="mb-4 border-bottom" label="表示">
           <InputRange

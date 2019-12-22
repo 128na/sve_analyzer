@@ -1,6 +1,6 @@
 <template>
   <span>
-    <slide-out :visible="show" size="600" @close="toggleShow">
+    <slide-out :visible="show" size="600" @close="toggleShow" title="路線選択" maskColor="#0000">
       <div class="mx-2 my-4">
         <CustomTable
           :items="computed_info.lines"

@@ -344,3 +344,17 @@ n個目からx,yは幅との余、商で求まる
   <i64>-100000</i64>
   <i8>2</i8>
  </einstellungen_t>
+
+編成
+<convoi_t>
+  <route_t>
+  　車両の走行位置情報
+  </route_t>
+  <![CDATA[編成名]]>
+  <vehikel_t>
+   <![CDATA[N両目車両名]]>
+   <![CDATA[貨物名]]>
+  </vehikel_t>
+  … 車両数分繰り返し
+</convoi_t>
+… 編成数分繰り返し
