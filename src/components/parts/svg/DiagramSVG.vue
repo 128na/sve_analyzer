@@ -138,14 +138,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.svg-area {
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  margin: -3.9rem 0 -1.5rem 0;
-  padding: 3.9rem 0 1.5rem 0;
-  overflow: auto;
-}
 .control-box {
   position: fixed;
   left: 1rem;

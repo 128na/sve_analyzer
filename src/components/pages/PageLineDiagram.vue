@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="is_ready">
+  <div class="page" v-show="is_ready">
     <LineFilter
       :show="show_line_filter"
       :info="info"
@@ -15,8 +15,14 @@
       @close="showSlide('')"
     />
     <DiagramExport :show="show_diagram_export" @download="download" />
-    <DiagramSVG :info="info" :config="config" :selected_lines="selected_lines" ref="diagram" />
-    <div class="btn-box" v-if="is_ready">
+    <DiagramSVG
+      v-if="is_ready"
+      :info="info"
+      :config="config"
+      :selected_lines="selected_lines"
+      ref="diagram"
+    />
+    <div class="btn-box">
       <span class="vertical secondary" @click="showSlide(slides.line_filter)">路線設定</span>
       <span class="vertical secondary" @click="showSlide(slides.diagram_config)">表示設定</span>
       <span class="vertical primary" @click="showSlide(slides.diagram_export)">エクスポート</span>
@@ -105,8 +111,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .btn-box {
-  position: absolute;
-  top: 2rem;
+  position: fixed;
+  top: 6rem;
   right: 0;
   width: 2rem;
   margin-top: 1px;
