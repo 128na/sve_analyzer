@@ -21,7 +21,9 @@ export default {
         players: this.info.players.map(p =>
           Object.assign({}, p, {
             type: relationService.getPlayerTypeName(p.type),
-            name: relationService.getPlayerName(p)
+            name: relationService.getPlayerName(p),
+            color_1: this.getColor(p.color_1),
+            color_2: this.getColor(p.color_2)
           })
         ),
         stations: this.info.stations.map(s => {
@@ -36,6 +38,11 @@ export default {
           };
         })
       });
+    }
+  },
+  methods: {
+    getColor(color_id) {
+      return relationService.getPlayerColor(color_id);
     }
   }
 };

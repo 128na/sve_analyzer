@@ -24,19 +24,16 @@ export default {
   getPlayerTypeName(type) {
     return PLAYER_TYPES[type] || "??";
   },
-  getPlayerColor1(color_id) {
+  getPlayerColor(color_id) {
     return PLAYER_COLOR[color_id] || PLAYER_COLOR[0];
   },
-  getPlayerColor2(color_id) {
-    return PLAYER_COLOR[color_id - 24] || PLAYER_COLOR[0];
-  },
   getPlayerColor1ByPlayerId(players, player_id) {
-    return this.getPlayerColor1(
+    return this.getPlayerColor(
       this.getPlayerById(players, player_id).color_1
     );
   },
   getPlayerColor2ByPlayerId(players, player_id) {
-    return this.getPlayerColor2(
+    return this.getPlayerColor(
       this.getPlayerById(players, player_id).color_2
     );
   },

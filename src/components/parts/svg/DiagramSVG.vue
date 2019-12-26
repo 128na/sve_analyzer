@@ -78,10 +78,10 @@ export default {
   },
   computed: {
     width() {
-      return this.adjust_scale ? "100%" : this.view_width;
+      return this.adjust_scale ? "100vw" : this.view_width;
     },
     height() {
-      return this.adjust_scale ? "100%" : this.view_height;
+      return this.adjust_scale ? "90vh" : this.view_height;
     },
     view_width() {
       return (
