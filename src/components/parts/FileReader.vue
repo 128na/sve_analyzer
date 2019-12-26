@@ -44,13 +44,14 @@ export default {
       }
     },
     async handleFileChange(file) {
-      const type = await fileService.getFormat(file);
+      gtag("event", "analyze");
 
       performance.clearMarks();
       performance.mark("start");
       this.working = true;
       this.updateStep(STEPS.START, true);
       this.$emit("update");
+      const type = await fileService.getFormat(file);
       const data = {
         file: Object.assign({ type }, fileService.getFileInfo(file)),
         info: null

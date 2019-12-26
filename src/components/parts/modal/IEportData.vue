@@ -51,6 +51,7 @@ export default {
         info: this.info
       };
 
+      gtag("event", "export", { event_label: type });
       exportService.download({ type, data, name });
       this.toast("エクスポートしました");
     },
@@ -64,6 +65,7 @@ export default {
       if (data) {
         await this.$emit("update", data);
         this.toast("インポートしました");
+        gtag("event", "import", { event_label: data.app.version });
       }
     }
   }

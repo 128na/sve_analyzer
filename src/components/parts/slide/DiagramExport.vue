@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     handleClick(type) {
+      gtag("event", "diagram_export", { event_label: type });
       this.$emit("download", { type, name: this.name });
     }
   }

@@ -6,16 +6,17 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=<%= VUE_APP_GA %>"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-
     const env = "<%= NODE_ENV %>";
     const ga_id = "<%= VUE_APP_GA %>";
-    if (env === "production" && ga_id) {
-      gtag("js", new Date());
-      gtag("config", ga_id);
+    function gtag() {
+      if (env === "production" && ga_id) {
+        dataLayer.push(arguments);
+      } else {
+        console.log(arguments);
+      }
     }
+    gtag("js", new Date());
+    gtag("config", ga_id);
   </script>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">

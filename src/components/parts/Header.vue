@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     handleClick(page) {
+      gtag("event", "page_click", { event_label: page });
       this.$emit("change_page", page);
     },
     is_current(page) {
