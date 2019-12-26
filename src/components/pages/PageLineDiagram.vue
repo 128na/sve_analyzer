@@ -44,7 +44,6 @@ export default {
         height: 0,
         padding: 16,
         line: {
-          stroke: "#000000",
           width: 1
         },
         stop: {
@@ -130,8 +129,7 @@ export default {
   background-color: var(--white);
   font-size: 0.875rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   &.secondary {
     border-left: solid 1px var(--gray);
     border-bottom: solid 1px var(--gray);

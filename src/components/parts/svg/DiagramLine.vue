@@ -1,6 +1,6 @@
 <template>
-  <polygon v-if="line.closed" :points="points" />
-  <polyline v-else :points="points" />
+  <polygon v-if="line.closed" :points="points" :stroke="stroke" />
+  <polyline v-else :points="points" :stroke="stroke" />
 </template>
 <script>
 export default {
@@ -15,6 +15,9 @@ export default {
           ].join(",")
         )
         .join(" ");
+    },
+    stroke() {
+      return this.line.color || "#000";
     }
   }
 };

@@ -7,7 +7,6 @@
       </b-form-group>
       <b-form-group class="mb-4 border-bottom" label="路線">
         <InputRange v-model.number="config.line.width" append="px">幅</InputRange>
-        <InputColor v-model="config.line.stroke">色</InputColor>
       </b-form-group>
       <b-form-group class="mb-4 border-bottom" label="停車駅名">
         <InputRange v-model.number="config.stop_label.size" :max="64" append="px">サイズ</InputRange>

@@ -14,7 +14,6 @@
           v-if="config.line.width"
           class="line-group"
           fill="none"
-          :stroke="config.line.stroke"
           :stroke-width="config.line.width"
         >
           <DiagramLine v-for="line in lines" :key="line.id" :line="line" :config="config" />
@@ -108,7 +107,14 @@ export default {
     lines() {
       return this.info.lines
         .filter(l => this.selected_lines.includes(l.id))
-        .map(l => diagramService.toRenderLine(l));
+        .map(l => diagramService.toRenderLine(l))
+        .map(l => {
+          l.color = relationService.getPlayerColor1ByPlayerId(
+            this.info.players,
+            l.player_id
+          );
+          return l;
+        });
     },
     stops() {
       return this.lines.map(l => l.stops).flat();

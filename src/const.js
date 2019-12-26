@@ -61,35 +61,35 @@ const SUPPORTED_SAVEFORMATS = {
 /**
  * プレーヤーカラー一覧
  */
-const PLAYER_COLORS = {
-  1: '#7396bd',
-  2: '#a5a2a5',
-  3: '#3975ce',
-  4: '#c6b608',
-  5: '#b54110',
-  6: '#4a8e18',
-  7: '#00ae9c',
-  8: '#a545bd',
-  9: '#9c6100',
-  10: '#b53c8c',
-  11: '#73964a',
-  12: '#ad7952',
-  13: '#2949bd',
-  14: '#8c6dad',
-  15: '#ad6142',
-  16: '#63ae84',
-  17: '#ff0000',
-  18: '#00ff00',
-  19: '#0041ff',
-  20: '#ff8200',
-  21: '#427108',
-  22: '#ffff21',
-  23: '#843829',
-  24: '#8c4110',
-  25: '#949200',
-  26: '#84ae42',
-  27: '#636163',
-  28: '#736994',
+const PLAYER_COLOR = {
+  '0': '#7396bd',
+  '8': '#a5a2a5',
+  '16': '#3975ce',
+  '24': '#c6b608',
+  '32': '#b54110',
+  '40': '#4a8e18',
+  '48': '#00ae9c',
+  '56': '#a545bd',
+  '64': '#9c6100',
+  '72': '#b53c8c',
+  '80': '#73964a',
+  '88': '#ad7952',
+  '96': '#2949bd',
+  '104': '#8c6dad',
+  '112': '#ad6142',
+  '120': '#63ae84',
+  '-128': '#ff0000',
+  '-120': '#00ff00',
+  '-112': '#0041ff',
+  '-104': '#ff8200',
+  '-96': '#427108',
+  '-88': '#ffff21',
+  '-80': '#843829',
+  '-72': '#8c4110',
+  '-64': '#949200',
+  '-56': '#84ae42',
+  '-48': '#636163',
+  '-40': '#736994',
 };
 
 const SLIDES = {
@@ -98,4 +98,4 @@ const SLIDES = {
   diagram_export: "diagram_export",
 };
 
-export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLORS, SLIDES };
+export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLOR, SLIDES };

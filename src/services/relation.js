@@ -1,4 +1,10 @@
-import { PLAYER_TYPES, DEFAULT_PLAYER_NAMES, WAY_TYPES } from "../const";
+import {
+  PLAYER_TYPES,
+  DEFAULT_PLAYER_NAMES,
+  WAY_TYPES,
+  PLAYER_COLOR
+} from "../const";
+
 export default {
   // way type
   getWayTypeName(type) {
@@ -18,7 +24,22 @@ export default {
   getPlayerTypeName(type) {
     return PLAYER_TYPES[type] || "??";
   },
-
+  getPlayerColor1(color_id) {
+    return PLAYER_COLOR[color_id] || PLAYER_COLOR[0];
+  },
+  getPlayerColor2(color_id) {
+    return PLAYER_COLOR[color_id - 24] || PLAYER_COLOR[0];
+  },
+  getPlayerColor1ByPlayerId(players, player_id) {
+    return this.getPlayerColor1(
+      this.getPlayerById(players, player_id).color_1
+    );
+  },
+  getPlayerColor2ByPlayerId(players, player_id) {
+    return this.getPlayerColor2(
+      this.getPlayerById(players, player_id).color_2
+    );
+  },
 
   // station
   getStationById(stations, station_id) {
