@@ -14,7 +14,7 @@
       :config="config"
       @close="showSlide('')"
     />
-    <DiagramExport :show="show_diagram_export" @download="download" />
+    <DiagramExport :show="show_diagram_export" @download="download" @close="showSlide('')" />
     <DiagramSVG
       v-if="is_ready"
       :info="info"
