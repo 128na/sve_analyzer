@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "size"
+      ]
+    },
+    "info": {
+      "type": "object",
+      "properties": {
+        "simutrans": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "pak": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "version",
+            "pak"
+          ]
+        },
+        "map": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer"
+            },
+            "no": {
+              "type": "integer"
+            },
+            "depth": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "width",
+            "no",
+            "depth"
+          ]
+        },
+        "stations": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "coordinates": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "player_id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "coordinates",
+                "id",
+                "player_id",
+                "name"
+              ]
+            }
+          ]
+        },
+        "players": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "color_1": {
+                  "type": "integer"
+                },
+                "color_2": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "type",
+                "color_1",
+                "color_2"
+              ]
+            }
+          ]
+        },
+        "lines": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "player_id": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "stops": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "station_id": {
+                          "type": "integer"
+                        },
+                        "coordinate": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "integer"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "station_id",
+                        "coordinate"
+                      ]
+                    }
+                  ]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "player_id",
+                "type",
+                "stops",
+                "name",
+                "id"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "simutrans",
+        "map",
+        "stations",
+        "players",
+        "lines"
+      ]
+    },
+    "app": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "version"
+      ]
+    }
+  },
+  "required": [
+    "file",
+    "info",
+    "app"
+  ]
+}
