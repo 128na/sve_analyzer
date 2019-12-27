@@ -30,14 +30,13 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
  */
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
-
 import routes from './routes';
 const router = new VueRouter({
   mode: 'history',
   routes
 });
 router.afterEach((to, from) => {
-  gtag("event", "page_click", { event_label: to.name });
+  gtag('config', process.env.VUE_APP_GA, { 'page_path': to.path });
 });
 
 
