@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     handleClick(name) {
-      this.$router.push({ name });
+      this.$router.push({ name }).catch(e => {});
     },
     isCurrent(name) {
       return name === this.current_papage;

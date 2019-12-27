@@ -32,6 +32,7 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 import routes from './routes';
 const router = new VueRouter({
+  base: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE : '/',
   mode: 'history',
   routes
 });
