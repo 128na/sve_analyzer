@@ -7,7 +7,7 @@
       xmlns="http://www.w3.org/2000/svg"
       ref="svg"
       :viewBox="viewBox"
-      preserveAspectRatio="xMinYMin meet"
+      preserveAspectRatio="xMidYMid meet"
     >
       <g :transform="transform">
         <g
@@ -59,9 +59,13 @@
         </g>
       </g>
     </svg>
-    <div class="control-box">
-      <span>出力サイズ {{ render_size }}</span>
-      <b-form-checkbox v-model="adjust_scale" class="mb-2" switch>表示サイズ自動調整</b-form-checkbox>
+    <div class="control-box d-flex">
+      <b-form-checkbox
+        v-model="adjust_scale"
+        class="mr-3 mb-2"
+        switch
+      >表示サイズ: {{ adjust_scale ? '自動' : '等倍'}}</b-form-checkbox>
+      <div>出力サイズ: {{ render_size }}</div>
     </div>
   </div>
 </template>

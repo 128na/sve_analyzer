@@ -1,19 +1,9 @@
 <template>
   <div id="app">
-    <Header :current_page="current_page" @change_page="change_page" />
-    <main>
-      <transition-group name="fade">
-        <PageTop
-          class="content"
-          v-show="is_top"
-          :file="file"
-          :info="info"
-          @update="update"
-          key="top"
-        />
-        <div class="content" v-if="!is_top" :is="component" :info="info" :key="component.name" />
-      </transition-group>
-    </main>
+    <Header />
+    <transition name="fade" mode="out-in">
+      <router-view :file="file" :info="info" @update="update" class="content"></router-view>
+    </transition>
     <Footer />
   </div>
 </template>
@@ -30,31 +20,11 @@ export default {
   data() {
     return {
       file: null,
-      info: null,
-      current_page: PAGES.TOP
+      info: null
     };
   },
   created() {
     this.setDefault();
-  },
-  computed: {
-    component() {
-      switch (this.current_page) {
-        case PAGES.STATIONS:
-          return PageStations;
-        case PAGES.LINES:
-          return PageLines;
-        case PAGES.LINE_DIAGRAM:
-          return PageLineDiagram;
-        case PAGES.USAGE:
-          return PageUsage;
-        default:
-          return null;
-      }
-    },
-    is_top() {
-      return this.current_page === PAGES.TOP;
-    }
   },
   methods: {
     setDefault() {
@@ -71,9 +41,6 @@ export default {
         lines: []
       };
     },
-    change_page(page) {
-      this.current_page = page;
-    },
     update(data = null) {
       if (data) {
         this.info = data.info;
@@ -86,17 +53,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-#app {
-  display: flex;
-  flex-direction: column;
-  main {
-    padding: 3.9rem 0 1.5rem 0;
-    height: 100vh;
-  }
+.content {
+  margin-top: 5rem;
+  margin-bottom: 3rem;
 }
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.25s;
+  transition: opacity 0.075s;
 }
 .fade-enter,
 .fade-leave-to {

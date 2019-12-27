@@ -9,12 +9,12 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item
-              v-for="(label, name) in pages"
-              :key="name"
-              @click="handleClick(label)"
-              :active="is_current(label)"
+              v-for="route in routes"
+              :key="route.name"
+              @click="handleClick(route.name)"
+              :active="isCurrent(route.name)"
               class="pr-2"
-            >{{label}}</b-nav-item>
+            >{{route.name}}</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-container>
@@ -23,21 +23,33 @@
 </template>
 <script>
 import { PAGES } from "../../const";
+import routes from "../../routes";
 export default {
-  props: ["current_page"],
+  data() {
+    return {
+      current_papage: null
+    };
+  },
+  created() {
+    this.current_papage = this.$route.name;
+  },
+  watch: {
+    $route(to) {
+      this.current_papage = to.name;
+    }
+  },
   computed: {
     app_name: () => process.env.VUE_APP_NAME,
-    pages() {
-      return PAGES;
+    routes() {
+      return routes;
     }
   },
   methods: {
-    handleClick(page) {
-      gtag("event", "page_click", { event_label: page });
-      this.$emit("change_page", page);
+    handleClick(name) {
+      this.$router.push({ name });
     },
-    is_current(page) {
-      return page === this.current_page;
+    isCurrent(name) {
+      return name === this.current_papage;
     }
   }
 };
@@ -47,14 +59,14 @@ export default {
   border-top: solid 4px var(--primary);
   border-bottom: solid 2px var(--light);
 }
-.nav-link.active {
-  font-weight: 900;
-}
 header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 72;
+}
+.nav-link.active {
+  font-weight: 900;
 }
 </style>

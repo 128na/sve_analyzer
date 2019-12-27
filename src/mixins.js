@@ -6,10 +6,18 @@ const toastControl = {
         isStatus: true,
       });
     },
+    toastWarn(message) {
+      this.$bvToast.toast(message, {
+        title: "注意",
+        variant: "warning",
+        isStatus: true,
+        toastClass: 'pre'
+      });
+    },
     toastDanger(message) {
       console.warn(message);
       this.$bvToast.toast(message, {
-        title: "通知",
+        title: "エラー",
         variant: "danger",
         isStatus: true,
         noAutoHide: true,

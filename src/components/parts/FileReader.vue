@@ -7,7 +7,7 @@
         drop-placeholder="ドロップ"
         accept=".sve"
         browse-text="選択"
-        :disabled="working"
+        :disabled="analyzing"
       ></b-form-file>
       <small>対応セーブフォーマット：xml, xml_zipped, xml_bzip2</small>
     </div>
@@ -19,11 +19,11 @@ import fileService from "../../services/file";
 import simutransService from "../../services/simutrans";
 import { toastControl } from "../../mixins";
 export default {
+  props: ["analyzing"],
   mixins: [toastControl],
   data() {
     return {
-      file: null,
-      working: false
+      file: null
     };
   },
   watch: {
@@ -48,7 +48,6 @@ export default {
 
       performance.clearMarks();
       performance.mark("start");
-      this.working = true;
       this.updateStep(STEPS.START, true);
       this.$emit("update");
       const type = await fileService.getFormat(file);
@@ -69,7 +68,6 @@ export default {
       this.updateStep(STEPS.RENDER);
       this.$emit("update", data);
       this.updateStep(STEPS.FINISHED, data.info);
-      this.working = false;
       performance.mark("finish");
 
       const marks = performance.getEntriesByType("mark");
