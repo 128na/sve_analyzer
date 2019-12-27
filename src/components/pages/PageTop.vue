@@ -1,36 +1,48 @@
 <template>
-  <b-container class="page">
-    <div class="page-content">
-      <p class="mb-4">Simutrans のセーブデータを解析し、駅一覧などを表示できます。</p>
-      <div class="mb-4">
-        <FileReader @update="update" />
-      </div>
-      <div class="mb-4">
-        <IEportData :file="file" :info="info" @update="update" :can_export="analyzed" />
-      </div>
-      <div>
-        <SummaryTable :file="file" :info="info" v-show="analyzed" />
-      </div>
+  <b-container>
+    <p class="mb-4">Simutrans のセーブデータを解析し、駅一覧などを表示できます。</p>
+    <div class="mb-4">
+      <FileReader @update="update" :analyzing="analyzing" />
+    </div>
+    <div class="mb-4">
+      <IEportData :file="file" :info="info" @update="update" :can_export="analyzing" />
+    </div>
+    <div>
+      <SummaryTable :file="file" :info="info" v-show="analyzed" />
     </div>
   </b-container>
 </template>
 <script>
+import { toastControl } from "../../mixins";
 export default {
   name: "TopPage",
   props: ["file", "info"],
+  mixins: [toastControl],
   data() {
     return {
-      analyzed: false
+      analyzing: false
     };
+  },
+  computed: {
+    analyzed() {
+      return this.info.simutrans.version;
+    }
   },
   methods: {
     update(data) {
       if (data) {
-        this.analyzed = true;
+        this.analyzing = false;
       } else {
-        this.analyzed = false;
+        this.analyzing = true;
       }
       this.$emit("update", data);
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (!this.analyzing) {
+      next();
+    } else {
+      this.toastWarn("解析中はページを切替できません");
     }
   }
 };

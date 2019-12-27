@@ -14,14 +14,6 @@ const PLAYER_TYPES = [
   'スクリプトAI',
 ];
 
-const PAGES = {
-  TOP: "トップ",
-  STATIONS: "駅・会社一覧",
-  LINES: "路線一覧",
-  LINE_DIAGRAM: "路線図",
-  USAGE: "使い方"
-};
-
 const WAY_TYPES = {
   1: '自動車',
   2: '鉄道',
@@ -295,4 +287,4 @@ const SLIDES = {
   diagram_export: "diagram_export",
 };
 
-export { STEPS, PLAYER_TYPES, PAGES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLOR, SLIDES };
+export { STEPS, PLAYER_TYPES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLOR, SLIDES };
