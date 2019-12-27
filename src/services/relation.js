@@ -24,17 +24,17 @@ export default {
   getPlayerTypeName(type) {
     return PLAYER_TYPES[type] || "??";
   },
-  getPlayerColor(color_id) {
-    return PLAYER_COLOR[color_id] || PLAYER_COLOR[0];
+  getPlayerColor(color_id, level = 4) {
+    return PLAYER_COLOR[color_id + level] || PLAYER_COLOR[level];
   },
-  getPlayerColor1ByPlayerId(players, player_id) {
+  getPlayerColor1ByPlayerId(players, player_id, level = 4) {
     return this.getPlayerColor(
-      this.getPlayerById(players, player_id).color_1
+      this.getPlayerById(players, player_id, level).color_1
     );
   },
-  getPlayerColor2ByPlayerId(players, player_id) {
+  getPlayerColor2ByPlayerId(players, player_id, level = 4) {
     return this.getPlayerColor(
-      this.getPlayerById(players, player_id).color_2
+      this.getPlayerById(players, player_id, level).color_2
     );
   },
 
