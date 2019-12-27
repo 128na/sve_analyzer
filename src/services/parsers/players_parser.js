@@ -34,16 +34,16 @@ export default {
         switch (text_count) {
           // player/simplay.h
           // class player_t の変数としては uint8 player_color_1, player_color_2;
-          case 0 :
-          player.color_1 = parseInt(text, 10); // 基調色
-          break;
-          case 1 :
-          player.color_2 = parseInt(text, 10); // 補助色
-          break;
+          case 0:
+            player.color_1 = parseInt(text, 10); // 基調色
+            break;
+          case 1:
+            player.color_2 = parseInt(text, 10); // 補助色
+            break;
         }
         text_count++;
       }
     });
-    
+
   },
 }
