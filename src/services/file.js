@@ -44,7 +44,6 @@ export default {
     if ([COMPRESS_FORMATS.bzip2, SAVEFORMATS.xml_bzip2, SAVEFORMATS.bzip2].includes(format)) {
       return stream.pipe(bz2());
     }
-    console.log(stream);
     return stream;
   },
   getCompressFormat(file) {
@@ -71,10 +70,11 @@ export default {
   isXml(file, format) {
     return new Promise((resolve, reject) => {
       const stream = this.createStream(file, format, 100);
+
       stream.on('data', chunk => {
         resolve(chunk.toString().includes(XML_HEADER));
         stream.destroy();
-      }).on('error', err => { });
+      }).on('error', err => { }); // destroy 後に unzip がエラーを吐くので無視
     });
   }
 }
