@@ -5,7 +5,7 @@
       <FileReader @update="update" :analyzing="analyzing" />
     </div>
     <div class="mb-4">
-      <IEportData :file="file" :info="info" @update="update" :can_export="analyzing" />
+      <IEportData :file="file" :info="info" @update="update" :can_export="analyzed" />
     </div>
     <div>
       <SummaryTable :file="file" :info="info" v-show="analyzed" />
