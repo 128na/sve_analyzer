@@ -17,7 +17,7 @@
     "file-saver": "^2.0.2",
     "file-type-stream": "^1.0.0",
     "filereader-stream": "^2.0.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "node-xml-stream": "^1.0.2",
     "sass-loader": "^8.0.0",
     "save-svg-as-png": "^1.4.14",
