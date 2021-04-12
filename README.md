@@ -1,6 +1,6 @@
 # sve_analyzer
 
-https://simutrans.sakura.ne.jp/sve_analyzer/
+https://sve-analyzer.128-bit.net
 
 Simutrans のセーブデータを解析し、駅一覧などを表示できるアプリです。
 

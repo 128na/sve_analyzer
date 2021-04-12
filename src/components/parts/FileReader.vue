@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import { STEPS } from "../../const";
+import { STEPS, SAVEFORMATS } from "../../const";
 import fileService from "../../services/file";
 import simutransService from "../../services/simutrans";
 import { toastControl } from "../../mixins";
@@ -51,6 +51,17 @@ export default {
       this.updateStep(STEPS.START, true);
       this.$emit("update");
       const type = await fileService.getFormat(file);
+
+      console.log("format: ", type);
+
+      if (
+        [SAVEFORMATS.binary, SAVEFORMATS.zipped, SAVEFORMATS.bzip2].includes(
+          type
+        )
+      ) {
+        throw new Error("未対応のフォーマットです");
+      }
+
       const data = {
         file: Object.assign({ type }, fileService.getFileInfo(file)),
         info: null

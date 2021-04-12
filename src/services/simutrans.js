@@ -1,10 +1,3 @@
-/**
- * @see https://github.com/maxogden/filereader-stream
- */
-import fileReaderStream from 'filereader-stream';
-/**
- * @see https://github.com/isaacs/sax-js
- */
 import sax from 'sax';
 
 import events from 'events';
@@ -13,13 +6,11 @@ import events from 'events';
  */
 events.EventEmitter.defaultMaxListeners = 334;
 
-import zlib from 'zlib';
-import bz2 from 'unbzip2-stream';
-
 import Parsers from './parsers/parsers';
-import { SUPPORTED_SAVEFORMATS } from '../const';
+import { SAVEFORMATS, COMPRESS_FORMATS } from '../const';
 import { jpNumberFromat } from '../helper';
 
+import fileService from './file';
 import relationService from './relation';
 export default {
   async parse(file, type, onUpdateProgress) {
@@ -41,18 +32,9 @@ export default {
       lines: data.lines,
     };
   },
-  parseContent(file, type, onUpdateProgress) {
+  parseContent(file, format, onUpdateProgress) {
     return new Promise((resolved, reject) => {
       const data = {};
-      let stream = fileReaderStream(file);
-
-      if (type === SUPPORTED_SAVEFORMATS.xml_zipped) {
-        stream = stream.pipe(zlib.Unzip());
-      }
-      if (type === SUPPORTED_SAVEFORMATS.xml_bzip2) {
-        stream = stream.pipe(bz2());
-      }
-
       const parser = this.createParser(resolved, reject, data, onUpdateProgress);
 
       Parsers.Simutrans.parse(parser, data);
@@ -65,7 +47,7 @@ export default {
       Parsers.HaltInfos.parse(parser, data);
       Parsers.Lines.parse(parser, data);
 
-      stream.pipe(parser);
+      fileService.createStream(file, format).pipe(parser);
     });
   },
   createParser(resolved, reject, data, onUpdateProgress) {

@@ -44,11 +44,20 @@ const DEFAULT_PLAYER_NAMES = {
   'player 13': 'プレイヤー 13',
 };
 
-const SUPPORTED_SAVEFORMATS = {
+const SAVEFORMATS = {
   xml: 'xml',
   xml_zipped: 'xml_zipped',
   xml_bzip2: 'xml_bzip2',
+  binary: 'binary',
+  zipped: 'zipped',
+  bzip2: 'bzip2',
+  unknown: 'unknown'
 };
+const COMPRESS_FORMATS = {
+  raw: 'raw',
+  zipped: 'zipped',
+  bzip2: 'bzip2'
+}
 
 /**
  * プレーヤーカラー一覧
@@ -287,4 +296,4 @@ const SLIDES = {
   diagram_export: "diagram_export",
 };
 
-export { STEPS, PLAYER_TYPES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SUPPORTED_SAVEFORMATS, PLAYER_COLOR, SLIDES };
+export { STEPS, PLAYER_TYPES, WAY_TYPES, DEFAULT_PLAYER_NAMES, SAVEFORMATS, COMPRESS_FORMATS, PLAYER_COLOR, SLIDES };
